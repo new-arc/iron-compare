@@ -12,11 +12,11 @@ hosting tier; `inputs/` left untouched.
 |---|---|---|---|
 | 1 | Gather inputs: my spec file, Wilson spec chart + product details, manufacturer photos for both sets | Every number traced to a source; every photo viewed and labelled by what it shows | Passed |
 | 2 | Check hosting access and pick a host | A host I can actually deploy to today, free tier | Passed: GitHub Pages (see Decisions) |
-| 3 | Build `site/data/iron-sets.json`: one entry per set, same shape | Values match sources; missing values are `null` | |
-| 4 | Build the comparison page (works for any two sets in the data) | Table aligned by club, difference call-outs, photo pairs by angle | |
-| 5 | Test locally at phone and laptop widths | Numbers match sources, photos load, no layout breakage | |
-| 6 | Deploy publicly | Live URL responds | |
-| 7 | Open the live site and re-check specs and photos; update README | Live values match sources; all photos load | |
+| 3 | Build `site/data/iron-sets.json`: one entry per set, same shape | Values match sources; missing values are `null` | Passed |
+| 4 | Build the comparison page (works for any two sets in the data) | Table aligned by club, difference call-outs, photo pairs by angle | Passed |
+| 5 | Test locally at phone and laptop widths | Numbers match sources, photos load, no layout breakage | Passed, after four small layout fixes |
+| 6 | Deploy publicly | Live URL responds | Passed: https://new-arc.github.io/iron-compare/ |
+| 7 | Open the live site and re-check specs and photos; update README | Live values match sources; all photos load | Passed: 56 of 56 Wilson cells match the Wilson page; Ping values match my file; 14 photos load. My file gained a Flex column mid-build (Stiff), picked up on the re-read and published |
 
 ## Decisions
 
