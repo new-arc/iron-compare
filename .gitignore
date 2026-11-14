@@ -1,0 +1,6 @@
+.DS_Store
+.claude/
+# Kept on this computer only (the repository is public):
+PROMPT.md
+inputs/
+source-photos/
