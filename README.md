@@ -71,7 +71,7 @@ kept out of it, and my club serial numbers are not in the data file.
   Retro Spec lofts, so the chart bounce is close but not exact. Nothing was
   adjusted.
 - My file lists swing weight E4 on every club; Ping's charts list D1 to D2 as
-  standard. Shown as written in my file. Worth confirming.
+  standard. I confirmed E4 is correct on 2026-11-14.
 - My lofts equal Ping's i59 Retro Spec lofts on every club, including the two
   i230s (Ping's i230 Retro Spec chart says 28.0° and 31.5° for the 5 and 6).
 - Ping publishes no sole photo of the i59 or the i230.
