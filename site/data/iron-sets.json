@@ -84,7 +84,8 @@
     {
       "key": "hand",
       "label": "Hand",
-      "type": "text"
+      "type": "text",
+      "compare": false
     }
   ],
   "detailFields": [
@@ -207,11 +208,17 @@
         },
         {
           "id": "ping-i59-chart",
-          "label": "Ping’s published i59 spec chart, on Ping’s i59 page as archived 16 Jun 2023",
+          "label": "Ping’s i59 page as archived 16 Jun 2023: spec chart, head material and finish",
           "url": "https://web.archive.org/web/20230616013539/https://ping.com/en-us/clubs/irons/i59",
           "retrieved": "2026-11-14",
           "mark": "†",
           "markNote": "Ping’s published design spec for the stock head. Not measured from my clubs."
+        },
+        {
+          "id": "ping-i230-page-2023",
+          "label": "Ping’s i230 page as archived 16 Jun 2023: head material and finish",
+          "url": "https://web.archive.org/web/20230616013546/https://ping.com/en-us/clubs/irons/i230",
+          "retrieved": "2026-11-14"
         }
       ],
       "details": {
@@ -220,9 +227,9 @@
         "shaftMaterial": null,
         "flex": "Stiff",
         "grip": null,
-        "headMaterial": null,
-        "finish": null,
-        "hand": null,
+        "headMaterial": "i230: 431 stainless steel. i59: forged 1025 carbon steel body, 17-4 stainless steel face, aluminum insert",
+        "finish": "i230: Hydropearl 2.0 chrome. i59: Hydropearl 2.0",
+        "hand": "Right-handed",
         "loftSpec": "RetroSpec",
         "colorCode": "Black",
         "lengthSpec": "Std",
@@ -241,7 +248,7 @@
             "bounce": 7.0,
             "offset": 0.14,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i230-chart",
@@ -260,7 +267,7 @@
             "bounce": 8.0,
             "offset": 0.12,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i230-chart",
@@ -279,7 +286,7 @@
             "bounce": 8.0,
             "offset": 0.08,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i59-chart",
@@ -298,7 +305,7 @@
             "bounce": 9.0,
             "offset": 0.06,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i59-chart",
@@ -317,7 +324,7 @@
             "bounce": 10.5,
             "offset": 0.04,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i59-chart",
@@ -337,7 +344,7 @@
             "bounce": 11.5,
             "offset": 0.02,
             "swingWeight": "E4",
-            "hand": null
+            "hand": "RH"
           },
           "from": {
             "lie": "ping-i59-chart",
@@ -353,7 +360,7 @@
         "Bounce: Ping says bounce varies slightly with non-standard lofts. My clubs are at Retro Spec lofts, so real bounce will differ a little from the chart. Nothing has been adjusted.",
         "My lofts match Ping’s i59 Retro Spec lofts for every club, including the two i230s. Ping’s own i230 chart lists 28.0° and 31.5° as Retro Spec for the 5 and 6.",
         "Swing weight E4 is from my file, and I confirmed it on 14 Nov 2026. Ping’s charts list D1 to D2 as standard.",
-        "My file has no hand or grip.",
+        "Head material and finish are from Ping’s own product pages for each head. Right-handed is from me, not my file. My file has no grip or shaft material.",
         "Serial numbers are in my file but left off this public page."
       ],
       "photoGroups": [

@@ -110,6 +110,7 @@
      kind: 'diff' | 'same' | 'none' (nothing to compare). */
   function describeDiff(va, vb, field) {
     if (va == null || vb == null || va === '' || vb === '') return { kind: 'none' };
+    if (field.compare === false) return { kind: 'none' };
     if (field.type === 'text') {
       return String(va).trim().toLowerCase() === String(vb).trim().toLowerCase()
         ? { kind: 'same', text: 'Same' } : { kind: 'diff', text: 'Different' };

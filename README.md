@@ -65,8 +65,9 @@ kept out of it, and my club serial numbers are not in the data file.
 
 ## Known gaps (2026-11-14)
 
-- My spec file has no hand or grip, and no shaft material, head material or
-  finish.
+- My spec file has no grip or shaft material. Head material and finish for
+  my Ping heads come from Ping's own product pages as archived 16 Jun 2023
+  (added 2026-11-14 at my request); right-handed is from me.
 - Ping says bounce varies slightly with non-standard lofts. My clubs are at
   Retro Spec lofts, so the chart bounce is close but not exact. Nothing was
   adjusted.
