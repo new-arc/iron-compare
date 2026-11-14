@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Iron Compare</title>
+  <meta name="description" content="Two sets of golf irons side by side: specs club by club and real photos.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#101a16">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101a16'/%3E%3Cpath d='M9 8v16M23 8v16' stroke='%23f4f2ec' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M14 16h4' stroke='%23e9b949' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brandmark" href="./">Iron <em>Compare</em></a>
+      <form class="pickers" id="pickers" aria-label="Choose two iron sets">
+        <label class="picker picker-a">
+          <span class="picker-tag">Set A</span>
+          <select id="pick-a" aria-label="Set A"></select>
+        </label>
+        <button type="button" class="swap" id="swap" aria-label="Swap the two sets" title="Swap">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <label class="picker picker-b">
+          <span class="picker-tag">Set B</span>
+          <select id="pick-b" aria-label="Set B"></select>
+        </label>
+      </form>
+    </div>
+  </header>
+
+  <main id="app" class="wrap">
+    <p class="loading">Loading the comparison…</p>
+  </main>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Photo">
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photo">×</button>
+    <img id="lightbox-img" alt="">
+    <p id="lightbox-cap" class="lightbox-cap"></p>
+  </dialog>
+
+  <noscript><p class="wrap">This page needs JavaScript to build the comparison.</p></noscript>
+  <script src="app.js" defer></script>
+</body>
+</html>
