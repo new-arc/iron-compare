@@ -240,7 +240,7 @@
         headline = amount + ' ' + word;
         sub = shortName(B) + ' vs ' + shortName(A) + ', ' + where;
       } else {
-        headline = 'Mixed';
+        headline = 'Within ' + diffAmount(Math.max(Math.abs(min), Math.abs(max)), field);
         sub = 'from ' + diffAmount(min, field) + ' ' + field.lower + ' to ' + diffAmount(max, field) + ' ' + field.higher + ', ' + where;
       }
       cards.push(el('div', { class: 'glance-card' },
@@ -314,11 +314,41 @@
     );
   }
 
-  function valueCell(entry, field, side) {
+  /* The source a value came from, when it is not the set's main source. */
+  function sourceOf(set, entry, key) {
+    var id = entry && entry.from && entry.from[key];
+    if (!id) return null;
+    for (var i = 0; i < (set.sources || []).length; i++) if (set.sources[i].id === id) return set.sources[i];
+    return null;
+  }
+
+  function valueCell(entry, field, side, set) {
     if (!entry) return el('span', { class: 'v v-' + side + ' v-absent', title: 'Not in this set', text: DASH });
     var v = entry.specs[field.key];
     var missing = v == null || v === '';
-    return el('span', { class: 'v v-' + side + (missing ? ' v-missing' : ''), title: missing ? 'Not given by the source' : null, text: fmtValue(v, field) });
+    var src = missing ? null : sourceOf(set, entry, field.key);
+    return el('span', { class: 'v v-' + side + (missing ? ' v-missing' : ''), title: missing ? 'Not given by the source' : (src ? src.label : null) },
+      fmtValue(v, field),
+      src && src.mark ? el('sup', { class: 'mark', text: src.mark }) : null);
+  }
+
+  /* One line per marked source that is actually used by a value on show. */
+  function markLegend(sets) {
+    var lines = [], seen = {};
+    sets.forEach(function (set) {
+      set.clubs.forEach(function (c) {
+        Object.keys(c.from || {}).forEach(function (key) {
+          var src = sourceOf(set, c, key);
+          if (!src || !src.mark) return;
+          var id = set.id + '|' + src.mark + '|' + (src.markNote || src.label);
+          if (seen[id]) return;
+          seen[id] = true;
+          lines.push(el('p', { class: 'block-note mark-note' },
+            el('span', { class: 'mark', text: src.mark }), ' ' + shortName(set) + ': ' + (src.markNote || src.label)));
+        });
+      });
+    });
+    return lines;
   }
 
   function clubHeaderBits(club, ea, eb, A, B) {
@@ -343,7 +373,7 @@
         data.specFields.map(function (f) {
           var diff = (ea && eb) ? describeDiff(ea.specs[f.key], eb.specs[f.key], f) : { kind: 'none' };
           return el('td', { class: diff.kind === 'diff' ? 'cell-diff' : null },
-            el('div', { class: 'pair' }, valueCell(ea, f, 'a'), valueCell(eb, f, 'b')),
+            el('div', { class: 'pair' }, valueCell(ea, f, 'a', A), valueCell(eb, f, 'b', B)),
             chip(diff));
         }));
     });
@@ -369,8 +399,8 @@
           var diff = (ea && eb) ? describeDiff(ea.specs[f.key], eb.specs[f.key], f) : { kind: 'none' };
           return el('tr', { class: diff.kind === 'diff' ? 'row-diff' : null },
             el('th', { scope: 'row', text: f.label }),
-            el('td', null, valueCell(ea, f, 'a')),
-            el('td', null, valueCell(eb, f, 'b')),
+            el('td', null, valueCell(ea, f, 'a', A)),
+            el('td', null, valueCell(eb, f, 'b', B)),
             el('td', { class: 'td-diff' }, chip(diff) || el('span', { class: 'v-absent', text: DASH })));
         }));
     });
@@ -390,6 +420,7 @@
         el('span', { class: 'chip chip-diff', text: 'Highlighted' }),
         ' notes say how the ' + shortName(B) + ' differs from the ' + shortName(A) +
         '. A dash means the source gives no value; nothing here is estimated.'),
+      markLegend([A, B]),
       matrixTable(A, B),
       stackedTable(A, B)
     );

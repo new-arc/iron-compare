@@ -1,47 +1,188 @@
 {
   "schemaVersion": 1,
-  "about": "One entry per iron set, same shape for every set. Use null for any value the source does not give; the page shows it as a dash and lists it under Missing data. Never estimate.",
-
-  "defaultComparison": { "a": "ping-i230-i59-combo", "b": "wilson-staff-model-blade" },
-
-  "clubOrder": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "PW", "UW", "GW", "SW", "LW"],
-
+  "about": "One entry per iron set, same shape for every set. Use null for any value the source does not give; the page shows it as a dash and lists it under Missing data. Never estimate. A club’s optional “from” map names the source id for any value that does not come from the set’s first source; a source with a “mark” gets that mark shown beside its values.",
+  "defaultComparison": {
+    "a": "ping-i230-i59-combo",
+    "b": "wilson-staff-model-blade"
+  },
+  "clubOrder": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "PW",
+    "UW",
+    "GW",
+    "SW",
+    "LW"
+  ],
   "specFields": [
-    { "key": "loft", "label": "Loft", "type": "number", "unit": "°", "decimals": 1, "fixed": false, "lower": "stronger", "higher": "weaker" },
-    { "key": "lie", "label": "Lie", "type": "number", "unit": "°", "decimals": 1, "fixed": false, "lower": "flatter", "higher": "more upright" },
-    { "key": "length", "label": "Length", "type": "number", "unit": "\"", "diffUnit": " in", "decimals": 2, "fixed": true, "lower": "shorter", "higher": "longer" },
-    { "key": "bounce", "label": "Bounce", "type": "number", "unit": "°", "decimals": 1, "fixed": true, "lower": "less bounce", "higher": "more bounce" },
-    { "key": "offset", "label": "Hosel offset", "type": "number", "unit": "\"", "diffUnit": " in", "decimals": 3, "fixed": true, "lower": "less offset", "higher": "more offset" },
-    { "key": "swingWeight", "label": "Swing weight", "type": "swingweight", "lower": "lighter", "higher": "heavier" },
-    { "key": "hand", "label": "Hand", "type": "text" }
+    {
+      "key": "loft",
+      "label": "Loft",
+      "type": "number",
+      "unit": "°",
+      "decimals": 1,
+      "fixed": false,
+      "lower": "stronger",
+      "higher": "weaker"
+    },
+    {
+      "key": "lie",
+      "label": "Lie",
+      "type": "number",
+      "unit": "°",
+      "decimals": 1,
+      "fixed": false,
+      "lower": "flatter",
+      "higher": "more upright"
+    },
+    {
+      "key": "length",
+      "label": "Length",
+      "type": "number",
+      "unit": "\"",
+      "diffUnit": " in",
+      "decimals": 3,
+      "fixed": false,
+      "lower": "shorter",
+      "higher": "longer"
+    },
+    {
+      "key": "bounce",
+      "label": "Bounce",
+      "type": "number",
+      "unit": "°",
+      "decimals": 1,
+      "fixed": true,
+      "lower": "less bounce",
+      "higher": "more bounce"
+    },
+    {
+      "key": "offset",
+      "label": "Hosel offset",
+      "type": "number",
+      "unit": "\"",
+      "diffUnit": " in",
+      "decimals": 3,
+      "fixed": false,
+      "lower": "less offset",
+      "higher": "more offset"
+    },
+    {
+      "key": "swingWeight",
+      "label": "Swing weight",
+      "type": "swingweight",
+      "lower": "lighter",
+      "higher": "heavier"
+    },
+    {
+      "key": "hand",
+      "label": "Hand",
+      "type": "text"
+    }
   ],
-
   "detailFields": [
-    { "key": "setMakeup", "label": "Set makeup" },
-    { "key": "shaft", "label": "Shaft" },
-    { "key": "shaftMaterial", "label": "Shaft material" },
-    { "key": "flex", "label": "Flex" },
-    { "key": "grip", "label": "Grip" },
-    { "key": "headMaterial", "label": "Head material" },
-    { "key": "finish", "label": "Finish" },
-    { "key": "hand", "label": "Hand" },
-    { "key": "loftSpec", "label": "Loft spec", "optional": true },
-    { "key": "colorCode", "label": "Color code", "optional": true },
-    { "key": "lengthSpec", "label": "Length spec", "optional": true },
-    { "key": "buildDate", "label": "Build date", "optional": true },
-    { "key": "modelNumber", "label": "Model number", "optional": true },
-    { "key": "price", "label": "Price", "optional": true }
+    {
+      "key": "setMakeup",
+      "label": "Set makeup"
+    },
+    {
+      "key": "shaft",
+      "label": "Shaft"
+    },
+    {
+      "key": "shaftMaterial",
+      "label": "Shaft material"
+    },
+    {
+      "key": "flex",
+      "label": "Flex"
+    },
+    {
+      "key": "grip",
+      "label": "Grip"
+    },
+    {
+      "key": "headMaterial",
+      "label": "Head material"
+    },
+    {
+      "key": "finish",
+      "label": "Finish"
+    },
+    {
+      "key": "hand",
+      "label": "Hand"
+    },
+    {
+      "key": "loftSpec",
+      "label": "Loft spec",
+      "optional": true
+    },
+    {
+      "key": "colorCode",
+      "label": "Color code",
+      "optional": true
+    },
+    {
+      "key": "lengthSpec",
+      "label": "Length spec",
+      "optional": true
+    },
+    {
+      "key": "buildDate",
+      "label": "Build date",
+      "optional": true
+    },
+    {
+      "key": "modelNumber",
+      "label": "Model number",
+      "optional": true
+    },
+    {
+      "key": "price",
+      "label": "Price",
+      "optional": true
+    }
   ],
-
   "photoAngles": [
-    { "key": "address", "label": "Address", "core": true },
-    { "key": "back", "label": "Back / cavity", "core": true },
-    { "key": "sole", "label": "Sole", "core": true },
-    { "key": "face", "label": "Face", "core": true },
-    { "key": "toe", "label": "Toe", "core": false },
-    { "key": "backToeDown", "label": "Back, toe down", "core": false }
+    {
+      "key": "address",
+      "label": "Address",
+      "core": true
+    },
+    {
+      "key": "back",
+      "label": "Back / cavity",
+      "core": true
+    },
+    {
+      "key": "sole",
+      "label": "Sole",
+      "core": true
+    },
+    {
+      "key": "face",
+      "label": "Face",
+      "core": true
+    },
+    {
+      "key": "toe",
+      "label": "Toe",
+      "core": false
+    },
+    {
+      "key": "backToeDown",
+      "label": "Back, toe down",
+      "core": false
+    }
   ],
-
   "sets": [
     {
       "id": "ping-i230-i59-combo",
@@ -55,6 +196,22 @@
           "label": "My spec file: “My Current Ping Iron Set Specifications”",
           "url": null,
           "retrieved": "2026-11-14"
+        },
+        {
+          "id": "ping-i230-chart",
+          "label": "Ping’s published i230 spec chart",
+          "url": "https://ping.com/en-us/golf-clubs/irons/i230-iron",
+          "retrieved": "2026-11-14",
+          "mark": "†",
+          "markNote": "Ping’s published design spec for the stock head. Not measured from my clubs."
+        },
+        {
+          "id": "ping-i59-chart",
+          "label": "Ping’s published i59 spec chart, on Ping’s i59 page as archived 16 Jun 2023",
+          "url": "https://web.archive.org/web/20230616013539/https://ping.com/en-us/clubs/irons/i59",
+          "retrieved": "2026-11-14",
+          "mark": "†",
+          "markNote": "Ping’s published design spec for the stock head. Not measured from my clubs."
         }
       ],
       "details": {
@@ -74,17 +231,129 @@
         "price": null
       },
       "clubs": [
-        { "club": "5", "head": "i230", "specs": { "loft": 28.8, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } },
-        { "club": "6", "head": "i230", "specs": { "loft": 32.3, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } },
-        { "club": "7", "head": "i59", "specs": { "loft": 36.0, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } },
-        { "club": "8", "head": "i59", "specs": { "loft": 40.0, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } },
-        { "club": "9", "head": "i59", "specs": { "loft": 44.0, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } },
-        { "club": "PW", "head": "i59", "stamp": "W", "specs": { "loft": 48.0, "lie": null, "length": "Std", "bounce": null, "offset": null, "swingWeight": "E4", "hand": null } }
+        {
+          "club": "5",
+          "head": "i230",
+          "specs": {
+            "loft": 28.8,
+            "lie": 60.5,
+            "length": 38.25,
+            "bounce": 7.0,
+            "offset": 0.14,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i230-chart",
+            "length": "ping-i230-chart",
+            "bounce": "ping-i230-chart",
+            "offset": "ping-i230-chart"
+          }
+        },
+        {
+          "club": "6",
+          "head": "i230",
+          "specs": {
+            "loft": 32.3,
+            "lie": 61.3,
+            "length": 37.625,
+            "bounce": 8.0,
+            "offset": 0.12,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i230-chart",
+            "length": "ping-i230-chart",
+            "bounce": "ping-i230-chart",
+            "offset": "ping-i230-chart"
+          }
+        },
+        {
+          "club": "7",
+          "head": "i59",
+          "specs": {
+            "loft": 36.0,
+            "lie": 62.0,
+            "length": 37.0,
+            "bounce": 8.0,
+            "offset": 0.08,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i59-chart",
+            "length": "ping-i59-chart",
+            "bounce": "ping-i59-chart",
+            "offset": "ping-i59-chart"
+          }
+        },
+        {
+          "club": "8",
+          "head": "i59",
+          "specs": {
+            "loft": 40.0,
+            "lie": 62.8,
+            "length": 36.5,
+            "bounce": 9.0,
+            "offset": 0.06,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i59-chart",
+            "length": "ping-i59-chart",
+            "bounce": "ping-i59-chart",
+            "offset": "ping-i59-chart"
+          }
+        },
+        {
+          "club": "9",
+          "head": "i59",
+          "specs": {
+            "loft": 44.0,
+            "lie": 63.5,
+            "length": 36.0,
+            "bounce": 10.5,
+            "offset": 0.04,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i59-chart",
+            "length": "ping-i59-chart",
+            "bounce": "ping-i59-chart",
+            "offset": "ping-i59-chart"
+          }
+        },
+        {
+          "club": "PW",
+          "head": "i59",
+          "stamp": "W",
+          "specs": {
+            "loft": 48.0,
+            "lie": 64.1,
+            "length": 35.5,
+            "bounce": 11.5,
+            "offset": 0.02,
+            "swingWeight": "E4",
+            "hand": null
+          },
+          "from": {
+            "lie": "ping-i59-chart",
+            "length": "ping-i59-chart",
+            "bounce": "ping-i59-chart",
+            "offset": "ping-i59-chart"
+          }
+        }
       ],
       "notes": [
-        "Length is written as “std” in my file, with no inch value, so lengths cannot be compared.",
-        "Lie is given only as Ping color code Black, with no degree value, so lie cannot be compared.",
-        "My file has no bounce, offset, hand or grip.",
+        "Loft and swing weight are from my file. Lie, length, bounce and offset (marked †) are from Ping’s published spec charts for each head, added 14 Nov 2026.",
+        "My file gives color code Black and “std” length. Ping’s charts say their lie angles are for Black color code at standard length, so the chart lie and length are used as they stand.",
+        "Bounce: Ping says bounce varies slightly with non-standard lofts. My clubs are at Retro Spec lofts, so real bounce will differ a little from the chart. Nothing has been adjusted.",
+        "My lofts match Ping’s i59 Retro Spec lofts for every club, including the two i230s. Ping’s own i230 chart lists 28.0° and 31.5° as Retro Spec for the 5 and 6.",
+        "Swing weight E4 is from my file. Ping’s charts list D1 to D2 as standard.",
+        "My file has no hand or grip.",
         "Serial numbers are in my file but left off this public page."
       ],
       "photoGroups": [
@@ -97,11 +366,23 @@
           "sourcePage": "https://web.archive.org/web/20230616013539/https://ping.com/en-us/clubs/irons/i59",
           "sourceNote": "Ping’s own i59 product page as archived 16 Jun 2023. Ping has since removed the page.",
           "photos": {
-            "address": { "file": "photos/ping-i59/address.jpg", "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_address_708x708.jpg" },
-            "back": { "file": "photos/ping-i59/back.jpg", "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_cavity_708x708.jpg" },
+            "address": {
+              "file": "photos/ping-i59/address.jpg",
+              "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_address_708x708.jpg"
+            },
+            "back": {
+              "file": "photos/ping-i59/back.jpg",
+              "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_cavity_708x708.jpg"
+            },
             "sole": null,
-            "face": { "file": "photos/ping-i59/face.jpg", "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_face_708x708.jpg" },
-            "toe": { "file": "photos/ping-i59/toe.jpg", "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_toe_708x708.jpg" },
+            "face": {
+              "file": "photos/ping-i59/face.jpg",
+              "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_face_708x708.jpg"
+            },
+            "toe": {
+              "file": "photos/ping-i59/toe.jpg",
+              "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_toe_708x708.jpg"
+            },
             "backToeDown": null
           }
         },
@@ -114,17 +395,28 @@
           "sourcePage": "https://ping.com/en-us/golf-clubs/irons/i230-iron",
           "sourceNote": "Ping’s i230 product page, retrieved 14 Nov 2026.",
           "photos": {
-            "address": { "file": "photos/ping-i230/address.webp", "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_from_address_1600x1600_9eef.png" },
-            "back": { "file": "photos/ping-i230/back.webp", "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_cavity_1600x1600_413f.png" },
+            "address": {
+              "file": "photos/ping-i230/address.webp",
+              "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_from_address_1600x1600_9eef.png"
+            },
+            "back": {
+              "file": "photos/ping-i230/back.webp",
+              "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_cavity_1600x1600_413f.png"
+            },
             "sole": null,
-            "face": { "file": "photos/ping-i230/face.webp", "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_face_view_1600x1600_605b.png" },
-            "toe": { "file": "photos/ping-i230/toe.webp", "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_from_toe_1600x1600_4f90.png" },
+            "face": {
+              "file": "photos/ping-i230/face.webp",
+              "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_face_view_1600x1600_605b.png"
+            },
+            "toe": {
+              "file": "photos/ping-i230/toe.webp",
+              "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_from_toe_1600x1600_4f90.png"
+            },
             "backToeDown": null
           }
         }
       ]
     },
-
     {
       "id": "wilson-staff-model-blade",
       "brand": "Wilson",
@@ -156,14 +448,103 @@
         "price": "$1,399.99 for 4–PW, as listed 14 Nov 2026"
       },
       "clubs": [
-        { "club": "3", "label": "3*", "specs": { "loft": 20, "lie": 59.5, "length": 39.25, "bounce": 2.5, "offset": 0.105, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "4", "specs": { "loft": 23, "lie": 60, "length": 38.75, "bounce": 2.5, "offset": 0.095, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "5", "specs": { "loft": 26, "lie": 61, "length": 38.25, "bounce": 2.5, "offset": 0.085, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "6", "specs": { "loft": 30, "lie": 61.5, "length": 37.75, "bounce": 3.0, "offset": 0.075, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "7", "specs": { "loft": 34, "lie": 62, "length": 37.25, "bounce": 4.0, "offset": 0.065, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "8", "specs": { "loft": 38, "lie": 63, "length": 36.75, "bounce": 5.0, "offset": 0.058, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "9", "specs": { "loft": 42, "lie": 63.5, "length": 36.25, "bounce": 5.5, "offset": 0.052, "swingWeight": "D2.0", "hand": "RH/LH*" } },
-        { "club": "PW", "specs": { "loft": 46, "lie": 64, "length": 35.75, "bounce": 6.0, "offset": 0.045, "swingWeight": "D2.0", "hand": "RH/LH*" } }
+        {
+          "club": "3",
+          "label": "3*",
+          "specs": {
+            "loft": 20,
+            "lie": 59.5,
+            "length": 39.25,
+            "bounce": 2.5,
+            "offset": 0.105,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "4",
+          "specs": {
+            "loft": 23,
+            "lie": 60,
+            "length": 38.75,
+            "bounce": 2.5,
+            "offset": 0.095,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "5",
+          "specs": {
+            "loft": 26,
+            "lie": 61,
+            "length": 38.25,
+            "bounce": 2.5,
+            "offset": 0.085,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "6",
+          "specs": {
+            "loft": 30,
+            "lie": 61.5,
+            "length": 37.75,
+            "bounce": 3.0,
+            "offset": 0.075,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "7",
+          "specs": {
+            "loft": 34,
+            "lie": 62,
+            "length": 37.25,
+            "bounce": 4.0,
+            "offset": 0.065,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "8",
+          "specs": {
+            "loft": 38,
+            "lie": 63,
+            "length": 36.75,
+            "bounce": 5.0,
+            "offset": 0.058,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "9",
+          "specs": {
+            "loft": 42,
+            "lie": 63.5,
+            "length": 36.25,
+            "bounce": 5.5,
+            "offset": 0.052,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        },
+        {
+          "club": "PW",
+          "specs": {
+            "loft": 46,
+            "lie": 64,
+            "length": 35.75,
+            "bounce": 6.0,
+            "offset": 0.045,
+            "swingWeight": "D2.0",
+            "hand": "RH/LH*"
+          }
+        }
       ],
       "notes": [
         "Wilson marks the 3 iron and the “RH/LH” hand column with an asterisk but the page does not say what the asterisk means.",
@@ -179,12 +560,31 @@
           "sourcePage": "https://www.wilson.com/en-us/products/staff-model-blade-irons-wg1p0385?variant=67884536824122",
           "sourceNote": "Wilson’s product page, retrieved 14 Nov 2026.",
           "photos": {
-            "address": { "file": "photos/wilson-staff-model-blade/address.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_1_Staff_Model_Blade_2026_Iron_Address_Shadow_WG1P038501_02.png" },
-            "back": { "file": "photos/wilson-staff-model-blade/back.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_0_Staff_Model_Blade_2026_Iron_Hero_WG1P038501_01.png" },
-            "sole": { "file": "photos/wilson-staff-model-blade/sole.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_7_Staff_Model_Blade_2026_Iron_Back_WG1P038501_06.png", "note": "Wilson names this file “Back”; it shows the sole." },
-            "face": { "file": "photos/wilson-staff-model-blade/face.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_3_Staff_Model_Blade_2026_Iron_Face_Shadow_WG1P038501_03.png" },
-            "toe": { "file": "photos/wilson-staff-model-blade/toe.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_4_Staff_Model_Blade_2026_Iron_Toe_Shadow_WG1P038501_04.png" },
-            "backToeDown": { "file": "photos/wilson-staff-model-blade/back-toe-down.webp", "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_5_Staff_Model_Blade_2026_Iron_ToeDown_Shadow_WG1P038501_05.png" }
+            "address": {
+              "file": "photos/wilson-staff-model-blade/address.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_1_Staff_Model_Blade_2026_Iron_Address_Shadow_WG1P038501_02.png"
+            },
+            "back": {
+              "file": "photos/wilson-staff-model-blade/back.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_0_Staff_Model_Blade_2026_Iron_Hero_WG1P038501_01.png"
+            },
+            "sole": {
+              "file": "photos/wilson-staff-model-blade/sole.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_7_Staff_Model_Blade_2026_Iron_Back_WG1P038501_06.png",
+              "note": "Wilson names this file “Back”; it shows the sole."
+            },
+            "face": {
+              "file": "photos/wilson-staff-model-blade/face.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_3_Staff_Model_Blade_2026_Iron_Face_Shadow_WG1P038501_03.png"
+            },
+            "toe": {
+              "file": "photos/wilson-staff-model-blade/toe.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_4_Staff_Model_Blade_2026_Iron_Toe_Shadow_WG1P038501_04.png"
+            },
+            "backToeDown": {
+              "file": "photos/wilson-staff-model-blade/back-toe-down.webp",
+              "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_5_Staff_Model_Blade_2026_Iron_ToeDown_Shadow_WG1P038501_05.png"
+            }
           }
         }
       ]

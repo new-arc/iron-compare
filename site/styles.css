@@ -163,7 +163,9 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 
 /* at a glance */
-.glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
+.glance-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+@media (min-width: 560px) { .glance-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) { .glance-grid { grid-template-columns: repeat(3, 1fr); } }
 .glance-card { background: var(--dark); color: #f4f2ec; border-radius: var(--radius); padding: 16px; }
 .glance-label { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #a9b8b0; font-weight: 600; }
 .glance-head { font-family: var(--serif); font-size: 1.6rem; line-height: 1.15; margin-top: 6px; color: #f6d47a; }
@@ -175,6 +177,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .v-a { color: var(--a); }
 .v-b { color: var(--b); }
 .v-missing, .v-absent { color: #a39f93; font-weight: 400; }
+.mark { font-size: .72em; font-weight: 700; color: #9a5b00; margin-left: 1px; line-height: 0; }
+.mark-note { margin-top: 4px; }
+.mark-note .mark { font-size: .9em; }
 
 .club-name { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; white-space: nowrap; }
 .club-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; }
@@ -215,8 +220,10 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
   text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: bottom;
 }
-.stacked thead th:nth-child(1) { width: 25%; }
-.stacked thead th:nth-child(2), .stacked thead th:nth-child(3) { width: 20%; }
+.stacked thead th:nth-child(1) { width: 22%; }
+.stacked thead th:nth-child(2) { width: 23%; }
+.stacked thead th:nth-child(3) { width: 21%; }
+.stacked .v { font-size: .9rem; white-space: nowrap; }
 .stacked thead th .dot { display: none; }
 .stacked thead .h-a { color: var(--a); }
 .stacked thead .h-b { color: var(--b); }
@@ -381,3 +388,8 @@ button.tile-frame:hover { border-color: #b9b39f; }
 }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+@media (max-width: 350px) {
+  .stacked .v { font-size: .8rem; }
+  .stacked .chip { font-size: .7rem; padding: 2px 6px; }
+}
