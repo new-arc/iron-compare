@@ -19,6 +19,11 @@ laptop widths.
 | `site/` | The website. Plain HTML, CSS and JavaScript, no build step |
 | `site/data/iron-sets.json` | All club data: one entry per iron set, same shape for each. The page works for any two sets in this file |
 | `site/photos/` | Web-sized manufacturer photos used by the site |
+| `site/stage.html` | The stage demo: one club from each set, side by side, for a projector. See "Stage demo" below |
+| `site/stage.js`, `site/stage-gl.js`, `site/stage.css` | The stage demo's script, its WebGL layer and its styles |
+| `site/core.js` | Value formatting and difference wording, shared by the comparison page and the stage demo |
+| `site/vendor/`, `site/fonts/` | Three.js and two fonts, stored with the site so the stage demo needs no internet |
+| `checks/` | Two checks to run before a demo or after a data change. See "Checks" below |
 | `source-photos/` | The untouched original photo downloads (this computer only) |
 | `deploy.sh` | Publishes `site/` to the live URL |
 | `PLAN.md` | The build plan, step results and decisions |
@@ -32,8 +37,91 @@ laptop widths.
 2. Preview locally: `python3 -m http.server 4173 --directory site`, then open
    http://localhost:4173.
 3. Commit, then run `./deploy.sh`. The live site updates in about a minute.
-   The script stamps a version number on the script and stylesheet links (and
-   commits that) so browsers load the new files straight away.
+   The script stamps a version number on the script and stylesheet links of
+   both pages (and commits that) so browsers load the new files straight away.
+
+## Stage demo
+
+`site/stage.html` is a version of the comparison built to be projected: two
+irons hang side by side, turn to the same toe-on view, and three differences
+(loft, hosel offset, bounce) appear next to the part of the club they belong
+to. It opens on my Ping i59 7 iron against the Wilson Staff Model Blade
+7 iron, because every photo in the data file is a stock 7 iron, so that is the
+one comparison where both pictures show the club being compared.
+
+Run it from the repository root, then open the address:
+
+```
+python3 -m http.server 4173 --directory site
+```
+
+http://localhost:4173/stage.html
+
+Everything it needs is in `site/`, so it runs with no internet connection.
+
+| Control | What it does |
+|---|---|
+| `Space`, `Enter`, `→`, `Page Down`, or the Compare button | Start the comparison. Once it has finished, the same keys replay it. Ignored while it is playing, so a double press is safe |
+| `R`, or the Replay button | Run the comparison back and play it again |
+| `5` `6` `7` `8` `9` `P`, or the club buttons | Change club. `5` and `6` switch the Ping side to the i230 head |
+| `Esc`, `←`, `Page Up` | Back to the opening screen |
+| `F` | Full screen on and off |
+
+The whole sequence takes 12.2 seconds. A presenter's clicker sends
+`Page Down` and `Page Up`, so it can start, replay and reset.
+
+What it is honest about:
+
+- The clubs are the manufacturers' own face and toe photos, not 3D models.
+  Each club is its two photos set at right angles and turned as one, so the
+  turn is a real quarter turn of two real pictures. Nothing is drawn or
+  estimated on top of them.
+- The rings on the clubs mark a part (face, hosel, sole). Their positions
+  were read off each photo by eye and are stored in the data file under the
+  photo group's `stage` block. They are positions in a picture, not specs.
+- Every number comes from the data file through the same code as the
+  comparison page, daggers included. The rulers in the middle are plain
+  linear scales with their ends labelled; nothing is exaggerated.
+- The 5 and 6 irons show Ping's i230 photo, which is a stock 7 iron. The
+  line at the bottom of the screen says so.
+
+How it adapts:
+
+- On a phone or a tall, narrow window it becomes an ordinary scrolling page
+  with numbered pins on the clubs instead of leader lines.
+- With the "reduce motion" setting on, Compare goes straight to the finished
+  comparison with a short fade. Add `?motion=reduce` to the address to try it.
+- If the browser cannot do WebGL, plain images take the canvas's place and
+  the same sequence plays. Add `?gl=0` to the address to try it.
+- Add `?t=6.5` to hold the sequence at one moment, for checking a layout.
+- `?a=`, `?b=` and `?club=` choose the sets and club, the same way the
+  comparison page's address does.
+
+To change what it opens on, or which specs it walks through, edit the
+`stage` block at the top of `site/data/iron-sets.json`.
+
+## Checks
+
+Run both from the repository root before a demo, and after changing the data
+file or the stage demo.
+
+```
+node checks/check-data.js
+```
+
+No setup. Checks that the data file is shaped the way the pages expect, that
+every photo it names is on disk, and that the stage settings point at sets,
+clubs, fields and photo anchors that exist.
+
+```
+node checks/check-stage.js
+```
+
+Needs Playwright (`npm install --no-save playwright && npx playwright install chromium`).
+Opens the stage demo in a real browser four ways (1920 by 1080, reduced
+motion, WebGL switched off, a phone), presses the same keys a presenter
+would, and compares every value and difference on screen with the data file.
+Takes about a minute and a half.
 
 ## Hosting
 
@@ -63,6 +151,20 @@ kept out of it, and my club serial numbers are not in the data file.
 - Photos are real manufacturer product photos of the actual models only. An
   angle with no real photo is left as an empty slot.
 
+- Stage demo (2026-11-14): the stage is a separate page, `stage.html`, and
+  the comparison page is unchanged apart from a link to it. It keeps the
+  no-build approach: plain files, with Three.js and two fonts stored in
+  `site/` so a venue with no internet cannot break it. The fonts are bundled
+  so the screen looks the same on any computer; the comparison page still
+  uses the computer's own fonts.
+- The stage opens on the 7 iron because all three heads were photographed as
+  stock 7 irons. It walks through loft, hosel offset and bounce because those
+  are the three specs you can see in a toe-on photo.
+- My i59 photos have a white background, which would show as a white square
+  on the dark stage. `site/photos/ping-i59/face-cutout.webp` and
+  `toe-cutout.webp` are the same two Ping photos with the background removed
+  and the picture enlarged to twice its size. The originals are untouched.
+
 ## Known gaps (2026-11-14)
 
 - My spec file has no grip or shaft material. Head material and finish for
@@ -80,3 +182,9 @@ kept out of it, and my club serial numbers are not in the data file.
   an archived copy of that page (16 Jun 2023) and are smaller (708 px).
 - Wilson's chart marks the 3 iron and "RH/LH" with an asterisk that the page
   never explains.
+- The stage demo is not on the live site until `./deploy.sh` is next run.
+- The stage demo has been tested in headless Chromium only, where WebGL runs
+  in software at about 15 frames a second. It has not yet been watched on a
+  real graphics card, a projector, Safari or Firefox.
+- The i59 photos are 708 pixels wide, so on the stage the i59 looks a little
+  softer than the Wilson and the i230.
