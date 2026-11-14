@@ -5,6 +5,36 @@
     "a": "ping-i230-i59-combo",
     "b": "wilson-staff-model-blade"
   },
+  "stage": {
+    "about": "Settings for the stage demo (stage.html). “featured” is the comparison it opens on. Each beat names a spec field, the part of the club its callout attaches to (an anchor in the photo group’s “stage” block) and the range its ruler covers: “zero” starts the ruler at 0, “data” spans every value of that field in the file. “also” lists fields summed up in one line at the end. No spec values live here.",
+    "featured": {
+      "a": "ping-i230-i59-combo",
+      "b": "wilson-staff-model-blade",
+      "club": "7"
+    },
+    "beats": [
+      {
+        "key": "loft",
+        "anchor": "face",
+        "ruler": "data"
+      },
+      {
+        "key": "offset",
+        "anchor": "hosel",
+        "ruler": "zero"
+      },
+      {
+        "key": "bounce",
+        "anchor": "sole",
+        "ruler": "zero"
+      }
+    ],
+    "also": [
+      "lie",
+      "length",
+      "swingWeight"
+    ]
+  },
   "clubOrder": [
     "1",
     "2",
@@ -391,6 +421,23 @@
               "original": "https://web.archive.org/web/20230616013539im_/https://pingmediastage.azureedge.net/mediastorage/mediastorage/ping-eu/medialibrary/clubs/irons/i59/i59_toe_708x708.jpg"
             },
             "backToeDown": null
+          },
+          "stage": {
+            "about": "Where the club head sits in the face and toe photos, as fractions of the image (left, top, right, bottom), and the points on the toe photo that the stage callouts attach to. These are positions in a picture, read off the photo by eye. They are not spec values.",
+            "note": "The cutout files are the same Ping photos with the white background removed and the picture enlarged to twice its size, so they can sit on the dark stage. Nothing else is changed.",
+            "face": {
+              "file": "photos/ping-i59/face-cutout.webp",
+              "head": [0.069, 0.445, 0.7, 0.801]
+            },
+            "toe": {
+              "file": "photos/ping-i59/toe-cutout.webp",
+              "head": [0.326, 0.485, 0.6, 0.905],
+              "anchors": {
+                "face": [0.378, 0.512],
+                "hosel": [0.553, 0.7],
+                "sole": [0.5, 0.898]
+              }
+            }
           }
         },
         {
@@ -420,6 +467,20 @@
               "original": "https://api.next.ping.com/media/catalog/product/c/l/clubs.irons.i230.7_iron_from_toe_1600x1600_4f90.png"
             },
             "backToeDown": null
+          },
+          "stage": {
+            "about": "Where the club head sits in the face and toe photos, as fractions of the image (left, top, right, bottom), and the points on the toe photo that the stage callouts attach to. These are positions in a picture, read off the photo by eye. They are not spec values.",
+            "face": {
+              "head": [0.098, 0.46, 0.72, 0.82]
+            },
+            "toe": {
+              "head": [0.338, 0.44, 0.645, 0.919],
+              "anchors": {
+                "face": [0.392, 0.475],
+                "hosel": [0.597, 0.7],
+                "sole": [0.515, 0.912]
+              }
+            }
           }
         }
       ]
@@ -591,6 +652,20 @@
             "backToeDown": {
               "file": "photos/wilson-staff-model-blade/back-toe-down.webp",
               "original": "https://www.wilson.com/cdn/shop/files/WG1P038501_5_Staff_Model_Blade_2026_Iron_ToeDown_Shadow_WG1P038501_05.png"
+            }
+          },
+          "stage": {
+            "about": "Where the club head sits in the face and toe photos, as fractions of the image (left, top, right, bottom), and the points on the toe photo that the stage callouts attach to. These are positions in a picture, read off the photo by eye. They are not spec values.",
+            "face": {
+              "head": [0.144, 0.465, 0.7, 0.811]
+            },
+            "toe": {
+              "head": [0.337, 0.405, 0.611, 0.809],
+              "anchors": {
+                "face": [0.372, 0.432],
+                "hosel": [0.585, 0.655],
+                "sole": [0.52, 0.8]
+              }
             }
           }
         }
