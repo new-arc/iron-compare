@@ -32,3 +32,28 @@ hosting tier; `inputs/` left untouched.
 - **Photos are stored with the site**, not hot-linked, so they keep working if
   the manufacturers move them. Untouched originals are in `source-photos/`.
 - **Serial numbers are left out** of the data file because the site is public.
+
+## Follow-up, 2026-11-14: fill the Ping gaps from Ping's charts
+
+I approved using Ping's published spec charts for my set's lie, length,
+bounce and offset.
+
+| # | Step | Check | Result |
+|---|---|---|---|
+| 1 | Read Ping's i230 chart (live page) and i59 chart (page archived 16 Jun 2023) | Both charts read, with their footnotes | Passed |
+| 2 | Add the values to the data file, tagged per club with their source | 24 values, each with a `from` entry | Passed |
+| 3 | Mark them on the page with a dagger and a one-line explanation | Marks show in both table layouts | Passed |
+| 4 | Test locally | No layout breakage at phone and laptop widths | Passed, after fixing a phone-width overlap on the longest value |
+| 5 | Publish and re-check the live site against both charts | Live values match the charts | Passed: 24 of 24 match |
+
+Decisions:
+
+- Length and offset now show only the decimals the source gives (Ping's
+  37 5/8" is shown as 37.625"), so no precision is implied that a chart does
+  not state.
+- `deploy.sh` now stamps a version on the script and stylesheet links. Reason:
+  after this publish the browser kept the old script for several minutes
+  while already loading the new data.
+- Not filled: hand and grip. Ping's pages list what the model was offered
+  in, which says nothing about my own clubs.
+
