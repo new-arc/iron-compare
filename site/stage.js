@@ -29,6 +29,12 @@
   const $ = (id) => document.getElementById(id);
 
   const stage = $('stage'), canvas = $('gl'), flatLayer = $('flat'), leaderLayer = $('leaders');
+  // Optional pieces a page can add to restyle the stage without its own script (tape.html uses them):
+  // a layer under the clubs for the leader lines, so a line that has to pass a club goes behind it,
+  // and a strip that unrolls as the comparison starts.
+  const lineLayer = $('leaders-under') || leaderLayer, tapeEl = $('tape');
+  // Joins the club to the set name under each plate. A page can set data-join on #stage.
+  const JOIN = stage.getAttribute('data-join') || ' · ';
   const mods = {};
   ['a', 'b'].forEach((side) => {
     const m = $('mod-' + side);
@@ -59,6 +65,7 @@
     swap: null,
     frozen: false,
     last: 0, rem: 10,
+    look: { dust: 1, pool: 1 },   // read from the page's CSS: --stage-dust and --stage-pool, 0 to 1
     reduced: false, flow: false,
     renderer: null
   };
@@ -147,7 +154,7 @@
   function plateName(m) { return (m.entry && m.entry.head) || m.set.name; }
   function plateSub(m, club) {
     const extra = (m.entry && m.entry.head) ? m.set.name : m.set.tagline;
-    return C.clubName(club) + (extra ? ' · ' + extra : '');
+    return C.clubName(club) + (extra ? JOIN + extra : '');
   }
 
   /* ---------- building the page (once) ---------- */
@@ -238,7 +245,8 @@
           num: svg('text', { class: 'pin-num' })
         };
         L.num.textContent = String(i + 1);
-        [L.line, L.pulse, L.ring, L.core, L.num].forEach((n) => g.appendChild(n));
+        [L.pulse, L.ring, L.core, L.num].forEach((n) => g.appendChild(n));
+        if (lineLayer === leaderLayer) g.insertBefore(L.line, L.pulse); else lineLayer.appendChild(L.line);
         leaderLayer.appendChild(g);
         beat.leader[side] = L;
       });
@@ -333,7 +341,8 @@
   function fitName(node) {
     node.style.fontSize = '';
     if (S.flow) return;
-    let size = 7.2;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 10;
+    let size = parseFloat(getComputedStyle(node).fontSize) / rem || 7.2;   // start from the size the stylesheet gives
     while (node.scrollWidth > node.clientWidth + 1 && size > 4) {
       size -= 0.3;
       node.style.fontSize = size + 'rem';
@@ -423,7 +432,7 @@
       faceO: faceO, toeO: toeO,
       faceFade: [fy - 0.18 * up, fy - 0.05 * up], toeFade: [ty - 0.17 * up, ty - 0.03 * up],
       glint: still ? 0 : glint, sweep: sweep, sweepAmt: sweepAmt,
-      pool: lerp(0.5, 0.85, mv) * clamp01(lerp(from.hh, to.hh, mv) / (28 * S.rem))   // no pool of light behind a thumbnail
+      pool: S.look.pool * lerp(0.5, 0.85, mv) * clamp01(lerp(from.hh, to.hh, mv) / (28 * S.rem))   // no pool of light behind a thumbnail
     };
   }
 
@@ -561,6 +570,14 @@
       start.classList.remove('is-replay');
     }
 
+    // The strip the differences are written on, where the page has one: it unrolls before the first value lands.
+    if (tapeEl) {
+      const u = glide(seg(T, 0.15, 0.9));
+      if (tapeEl.__u !== u) { tapeEl.__u = u; tapeEl.style.setProperty('--unroll', u.toFixed(4)); }
+      show(tapeEl, u > 0 ? 1 : 0);
+    }
+    if (stage.__intro !== S.intro) { stage.__intro = S.intro; stage.style.setProperty('--intro', S.intro.toFixed(4)); }
+
     const headO = glide(seg(T, 0.9, 0.8));
     show($('head'), headO);
     put($('head'), 'transform', flow ? '' : 'translateY(' + ((1 - headO) * 1.6).toFixed(2) + 'rem)');
@@ -628,8 +645,8 @@
         const photo = S.model[side].photo;
         const uv = photo && photo.toe.anchors[beat.anchor];
         const at = uv && ringO > 0 ? S.renderer.anchor(side, uv) : null;
-        if (!at) { put(L.g, 'display', 'none'); return; }
-        put(L.g, 'display', '');
+        if (!at) { put(L.g, 'display', 'none'); put(L.line, 'display', 'none'); return; }
+        put(L.g, 'display', ''); put(L.line, 'display', '');
         const cx = at.x.toFixed(1), cy = at.y.toFixed(1);
         [L.ring, L.core, L.pulse].forEach((n) => { attr(n, 'cx', cx); attr(n, 'cy', cy); });
         attr(L.ring, 'r', r.toFixed(1)); attr(L.core, 'r', (flow ? 0 : r * 0.36).toFixed(1));
@@ -637,14 +654,16 @@
         attr(L.pulse, 'r', (r * (1 + 2.6 * outCubic(pulse))).toFixed(1));
         put(L.pulse, 'opacity', ((1 - pulse) * 0.9).toFixed(2));
         attr(L.num, 'x', cx); attr(L.num, 'y', cy); put(L.num, 'opacity', ringO.toFixed(2));
-        if (flow) { put(L.ring, 'fill', 'var(--gold)'); return; }
+        if (flow) { put(L.ring, 'fill', 'var(--pin-flow-fill, var(--gold))'); return; }
         put(L.ring, 'fill', '');
 
-        // From the edge of the label to the edge of the ring.
+        // From the edge of the label nearest the ring to the edge of the ring: the bottom of a label
+        // above the club, else whichever side of the label faces the club.
         const box = beat.tag[side].root.getBoundingClientRect();
         let sx, sy;
-        if (beat.anchor === 'face') { sx = Math.min(Math.max(at.x, box.left + 2 * S.rem), box.right - 2 * S.rem); sy = box.bottom + 0.6 * S.rem; }
-        else { sx = box.left - 1.2 * S.rem; sy = box.top + box.height * 0.64; }
+        if (beat.anchor === 'face' && at.x > box.left && at.x < box.right) { sx = Math.min(Math.max(at.x, box.left + 2 * S.rem), box.right - 2 * S.rem); sy = box.bottom + 0.6 * S.rem; }
+        else if (at.x <= box.left) { sx = box.left - 1.2 * S.rem; sy = box.top + box.height * 0.64; }
+        else { sx = box.right + 1.2 * S.rem; sy = box.top + box.height * 0.64; }
         const dx = at.x - sx, dy = at.y - sy, len = Math.hypot(dx, dy) || 1;
         const ex = at.x - dx / len * (r + 2), ey = at.y - dy / len * (r + 2);
         attr(L.line, 'd', 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + 'L' + ex.toFixed(1) + ' ' + ey.toFixed(1));
@@ -745,6 +764,12 @@
   function measure() {
     S.rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 10;
     leaderLayer.style.setProperty('--sw', (0.26 * S.rem).toFixed(2) + 'px');
+    if (lineLayer !== leaderLayer) lineLayer.style.setProperty('--sw', (0.26 * S.rem).toFixed(2) + 'px');
+    const css = getComputedStyle(document.documentElement);
+    ['dust', 'pool'].forEach((k) => {
+      const v = parseFloat(css.getPropertyValue('--stage-' + k));
+      S.look[k] = isFinite(v) ? clamp01(v) : 1;
+    });
     if (S.renderer) S.renderer.resize(window.innerWidth, window.innerHeight);
     if (S.model) ['a', 'b'].forEach((side) => fitName(mods[side].name));
   }
@@ -778,7 +803,7 @@
       a: poseOf('a', t), b: poseOf('b', t),
       driftX: still ? 0 : Math.sin(t * 0.11) * 0.9 * S.rem,
       driftY: still ? 0 : Math.sin(t * 0.17) * 0.6 * S.rem,
-      dust: S.appear * 0.9
+      dust: S.appear * 0.9 * S.look.dust
     });
     paintLeaders();
   }

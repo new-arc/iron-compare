@@ -1,0 +1,405 @@
+/* Iron Compare: stage demo, "tale of the tape" look (tape.html).
+
+   Same page, same script (stage.js) as stage.html; only the look changes.
+   Borrowed from the boxing fight card: each club owns half the screen as a
+   flat colour field, and a measuring tape down the seam carries the
+   differences.
+
+   Two layouts, as in stage.css:
+   - Flow (phones, tall or narrow windows): an ordinary scrolling page.
+   - Artboard (wide screens, projectors): a fixed 1920 by 1080 board scaled to
+     fit the window. Inside it 1rem is 10 board pixels.
+
+   Knobs stage.js reads from here: --stage-dust and --stage-pool (0 turns off
+   the canvas's floating specks and the pool of light behind each club), the
+   #tape element (unrolled through --unroll), #leaders-under (leader lines go
+   under the clubs) and data-join on #stage (what joins the club to the set
+   name under each plate). */
+
+@font-face {
+  font-family: "IC Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: block;
+  src: url("fonts/archivo-latin-wdth-normal.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: dark;
+  --navy: #16255c;
+  --oxide: #b8341f;
+  --bone: #f1ead6;
+  --black: #000;
+  --white: #fff;
+  --muted: rgba(255, 255, 255, .72);     /* small text on the navy field */
+  --muted-bone: rgba(241, 234, 214, .72);
+  --line-bone: rgba(241, 234, 214, .3);
+  /* The spotlights: the field colour a few per cent lighter. */
+  --navy-lit: #1d2f6e;
+  --oxide-lit: #c53d26;
+  --font: "IC Archivo", "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --u: min(calc(100vw / 1920), calc(100vh / 1080));
+  --stage-dust: 0;
+  --stage-pool: 0;
+  --pin-flow-fill: var(--bone);
+}
+
+* { box-sizing: border-box; }
+html { font-size: 62.5%; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; color: var(--white); background: var(--black);
+  font-family: var(--font); font-stretch: 100%; font-weight: 500;
+  font-size: 1.6rem; line-height: 1.35; font-variant-numeric: tabular-nums;
+}
+h1, h2, p, ul { margin: 0; }
+h1, h2 { font-weight: inherit; }
+ul { padding: 0; list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+kbd {
+  font: 600 .78em/1 var(--font); font-stretch: 100%; padding: .28em .5em; border-radius: .25em;
+  border: 1px solid var(--line-bone); color: var(--bone); background: none;
+}
+:focus-visible { outline: 3px solid var(--bone); outline-offset: 3px; box-shadow: 0 0 0 6px var(--black); }
+
+/* On this page the field colour is the club. Club B's small text goes to full white: 72% white on oxide is too faint. */
+.side-a { --side: var(--navy); --side-muted: var(--muted); }
+.side-b { --side: var(--oxide); --side-muted: var(--white); }
+
+/* ---------- the layers under the text ---------- */
+
+.gl, .flat, .leaders { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; }
+.gl { z-index: 1; display: block; }
+.flat { z-index: 1; overflow: hidden; display: none; }
+.leaders { z-index: 2; overflow: visible; }
+.leaders.leaders-under { z-index: 1; }      /* first in the page, so the clubs draw over it */
+html.no-gl .gl { display: none; }
+html.no-gl .flat { display: block; }
+
+.flat-club { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.flat-club img { position: absolute; left: 0; top: 0; width: 1000px; height: 1000px; max-width: none; transform-origin: 0 0; will-change: transform, opacity; }
+
+/* --sw is set by stage.js so line weights scale with the board (about 2.6px at 1080p). */
+.leader { fill: none; stroke: var(--bone); stroke-width: var(--sw, 2.6px); stroke-linecap: round; }
+.ring { fill: var(--black); stroke: var(--bone); stroke-width: calc(var(--sw, 2.6px) * 1.4); }
+.ring-core { fill: var(--black); }
+.pulse { fill: none; stroke: var(--bone); stroke-width: var(--sw, 2.6px); }
+.pin-num { fill: var(--black); font: 700 12px var(--font); text-anchor: middle; dominant-baseline: central; display: none; }
+
+/* ---------- type ---------- */
+
+.display, .intro-title, .plate-name, .tag-value, .beat-v, .beat-delta .amount, .head-club, .cta-word, .brandmark {
+  font-stretch: 62%; font-weight: 850; letter-spacing: -.01em; line-height: .92;
+}
+
+/* ---------- shared pieces ---------- */
+
+/* The stage is not its own layer here, so the colour panels in the flow layout can sit under the
+   clubs while the words sit over them. Everything with words in it is lifted above the canvas. */
+.stage { position: relative; }
+.bar, .intro-title, .intro-sub, .cta-wrap, .head, .tag, .plate, .beats, .foot, .status { position: relative; z-index: 3; }
+
+.bar { color: var(--bone); }
+.bar-start { display: flex; align-items: baseline; min-width: 0; }
+.brandmark { text-decoration: none; white-space: nowrap; color: var(--bone); }
+.look-link { color: var(--muted-bone); font-weight: 500; white-space: nowrap; text-underline-offset: .2em; }
+.look-link:hover { color: var(--bone); }
+
+.rail { display: flex; align-items: center; }
+.rail-label { color: var(--muted-bone); font-weight: 600; }
+.rail button {
+  flex: none; font-weight: 650; color: var(--bone); background: none; border: 2px solid var(--line-bone);
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.rail button:hover { border-color: var(--bone); }
+.rail button[aria-pressed="true"] { background: var(--bone); border-color: var(--bone); color: var(--black); }
+
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none; white-space: nowrap;
+  font-weight: 600; color: var(--bone); background: none; border: 2px solid var(--line-bone);
+  transition: background-color .15s, border-color .15s, color .15s, opacity .2s;
+}
+.pill:hover { border-color: var(--bone); }
+.pill[disabled] { opacity: .32; cursor: default; }
+.pill.is-ready { border-color: var(--bone); }
+.pill.is-ready:hover { background: var(--bone); color: var(--black); }
+.pill.is-ready:hover kbd { color: var(--black); border-color: rgba(0, 0, 0, .3); }
+
+.intro-title { color: var(--white); }
+.intro-title .w { display: inline-block; white-space: pre; }
+.intro-sub { color: var(--muted-bone); font-weight: 500; }
+.cta {
+  display: inline-flex; align-items: center; justify-content: center; border: 0;
+  background: var(--black); color: var(--bone);
+  transition: background-color .15s, color .15s, opacity .2s;
+}
+.cta[disabled] { opacity: .45; cursor: default; }
+.cta:focus-visible { outline: 4px solid var(--white); outline-offset: 6px; box-shadow: none; }
+.cta-hint { color: var(--muted-bone); }
+
+.head-club { color: var(--black); }
+.head-sub { color: var(--black); font-weight: 600; }
+
+.plate-brand { font-weight: 600; color: var(--white); }
+.plate-name { color: var(--white); white-space: nowrap; }
+.plate-sub { color: var(--side-muted); font-weight: 500; }
+
+.tag-label { font-weight: 600; color: var(--side-muted); white-space: nowrap; }
+.tag-value { color: var(--white); white-space: nowrap; }
+.beat-label { font-weight: 600; color: var(--black); }
+.beat-v { color: var(--black); white-space: nowrap; }
+.mark { font-size: .42em; font-weight: 700; font-stretch: 100%; color: var(--bone); vertical-align: top; position: relative; top: .25em; margin-left: .08em; letter-spacing: 0; }
+.beat-v .mark { color: var(--black); }
+.is-missing { opacity: .72; }
+
+.beat-delta { color: var(--black); }
+.beat-delta .amount { display: block; }
+.beat-delta .word { display: block; font-weight: 600; }
+.beat-delta.is-same .amount { opacity: .72; }
+
+.ruler { display: block; overflow: visible; }
+.ruler .track { stroke: var(--black); stroke-width: 2.5; }
+.ruler .tick { stroke: var(--black); stroke-width: 2.5; }
+.ruler .end { fill: var(--black); font: 600 15px var(--font); }
+.ruler .gap { stroke: var(--black); stroke-width: 9; stroke-linecap: butt; }
+.ruler .m-a { fill: var(--navy); }
+.ruler .m-b { fill: var(--oxide); }
+
+.also { display: flex; flex-wrap: wrap; }
+.also-label { font-weight: 500; color: var(--muted-bone); margin-right: .45em; }
+.also-val { font-weight: 650; color: var(--bone); }
+.notes { color: var(--muted-bone); }
+.notes .mark { font-size: 1em; top: 0; vertical-align: baseline; margin: 0 .2em 0 0; color: var(--bone); }
+
+.status { color: var(--bone); text-align: center; }
+.status.is-error { color: var(--white); }
+.stage:not([data-phase="loading"]) .status:not(.is-error) { display: none; }
+.noscript { position: relative; z-index: 4; padding: 24px; text-align: center; color: var(--bone); }
+
+/* The tape's edges: short black ticks every 1rem, longer ones every 5rem. */
+.tape, .head, .beats {
+  --tick: repeating-linear-gradient(to bottom, var(--black) 0 2px, transparent 2px 1rem);
+  --tick-long: repeating-linear-gradient(to bottom, var(--black) 0 2px, transparent 2px 5rem);
+}
+
+.stage[data-phase="loading"] .intro, .stage[data-phase="loading"] .module,
+.stage[data-phase="loading"] .rail { visibility: hidden; }
+
+/* The opening headline rises in word by word on a cold load. */
+@keyframes word-in { from { opacity: 0; transform: translateY(.35em); } to { opacity: 1; transform: none; } }
+.stage.is-entering .intro-title .w { animation: word-in .9s cubic-bezier(.35, 0, 0, 1) both; animation-delay: calc(var(--i) * 60ms + 120ms); }
+@keyframes rise-in { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+.stage.is-entering .intro-sub { animation: rise-in .8s cubic-bezier(.35, 0, 0, 1) .55s both; }
+.stage.is-entering .cta-wrap > * { animation: rise-in .8s cubic-bezier(.35, 0, 0, 1) .75s both; }
+.stage.is-entering .plate { animation: rise-in .8s cubic-bezier(.35, 0, 0, 1) .45s both; }
+
+/* ---------- flow layout: phones, narrow or tall windows ---------- */
+
+.stage {
+  max-width: 640px; margin: 0 auto; padding: 0 16px max(28px, env(safe-area-inset-bottom));
+  display: grid; grid-template-columns: 1fr 1fr; column-gap: 0;
+  grid-template-areas: "bar bar" "title title" "sub sub" "ma mb" "cta cta" "head head" "beats beats" "foot foot" "status status";
+}
+.tape { display: none; }
+.bar { grid-area: bar; display: grid; grid-template-columns: 1fr auto; align-items: center; row-gap: 12px; padding-top: 14px; }
+.bar-start { flex-direction: column; align-items: flex-start; gap: 2px; }
+.brandmark { font-size: 2.6rem; }
+.look-link { font-size: 1.3rem; }
+.bar-actions { display: flex; gap: 8px; }
+.pill { height: 40px; padding: 0 14px; border-radius: 6px; font-size: 1.4rem; gap: 7px; }
+.pill svg { width: 16px; height: 16px; }
+.pill kbd, .cta-hint { display: none; }
+.pill-quiet { padding: 0 4px; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.rail { grid-column: 1 / -1; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 2px 4px; }
+.rail::-webkit-scrollbar { display: none; }
+.rail-label { font-size: 1.3rem; margin-right: 4px; }
+.rail button { width: 46px; height: 42px; border-radius: 6px; font-size: 1.6rem; }
+
+.intro { display: contents; }
+.intro-title { grid-area: title; color: var(--bone); font-size: clamp(4rem, 13vw, 6.4rem); margin-top: 22px; }
+.intro-sub { grid-area: sub; font-size: 1.6rem; margin: 10px 0 18px; }
+.cta-wrap { grid-area: cta; margin-top: 14px; }
+.cta { width: 100%; height: 56px; border-radius: 6px; background: var(--bone); color: var(--black); font-size: 2.8rem; }
+.cta:not([disabled]):hover { background: var(--white); }
+
+/* The two panels: colour under the clubs, so these blocks are not lifted. */
+.module { display: grid; grid-template-columns: 1fr; align-content: start; min-width: 0; background: var(--side); padding: 0 12px 14px; }
+.side-a { grid-area: ma; margin-left: -16px; padding-left: 16px; }
+.side-b { grid-area: mb; margin-right: -16px; padding-right: 16px; }
+.slot { grid-area: 1 / 1; aspect-ratio: 1 / 1.12; }
+.slot-intro { margin: 34% 30% 0 0; }      /* the face view is wide: leave room for its shaft */
+.slot-compare { margin: 24% 12% 0; }
+.tags { display: none; }
+.plate { margin-top: 10px; min-width: 0; }
+.plate-brand { font-size: 1.3rem; }
+.plate-name { font-size: 3.2rem; margin-top: 2px; white-space: normal; text-wrap: balance; }
+.plate-sub { font-size: 1.3rem; margin-top: 4px; }
+
+/* The tape: one bone block, ticked down both edges, from the club name to the last ruler. */
+.head, .beats {
+  margin-left: -16px; margin-right: -16px; padding-left: 30px; padding-right: 30px; background:
+    var(--tick) left top / 10px 100% no-repeat, var(--tick) right top / 10px 100% no-repeat,
+    var(--tick-long) left top / 18px 100% no-repeat, var(--tick-long) right top / 18px 100% no-repeat,
+    var(--bone);
+}
+.head { grid-area: head; margin-top: 22px; padding-top: 18px; padding-bottom: 4px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.head-club { font-size: 4.4rem; }
+.head-sub { font-size: 1.4rem; }
+
+.beats { grid-area: beats; padding-bottom: 10px; }
+/* No empty tape under the opening screen: it is filled in once the comparison has been run. */
+.stage[data-phase="intro"] .beats, .stage[data-phase="loading"] .beats { background: none; }
+.beat {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 10px;
+  grid-template-areas: "label label label" "va delta vb" "ruler ruler ruler";
+  padding: 14px 0 12px; border-bottom: 2px solid var(--black);
+}
+.beat:last-child { border-bottom: 0; }
+.beat-label { grid-area: label; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+.beat-num {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--black); color: var(--bone); font-size: 1.2rem; font-weight: 700;
+}
+.beat-v { font-size: 4rem; }
+.beat-va { grid-area: va; }
+.beat-vb { grid-area: vb; text-align: right; }
+.beat-delta { grid-area: delta; text-align: center; }
+.beat-delta .amount { font-size: 3rem; }
+.beat-delta .word { font-size: 1.3rem; margin-top: 2px; }
+.ruler { grid-area: ruler; width: 100%; height: 46px; margin-top: 6px; }
+
+.foot { grid-area: foot; margin-top: 18px; }
+.also { gap: 6px 22px; font-size: 1.5rem; }
+.notes { font-size: 1.2rem; margin-top: 12px; }
+.status { grid-area: status; margin-top: 30px; }
+
+.pin-num { display: block; }
+.leader { display: none; }
+
+/* ---------- artboard layout: laptops and projectors ---------- */
+
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  html { font-size: calc(10 * var(--u)); height: 100%; overflow: hidden; }
+  /* The two fields meet at the middle of the window, so they line up with the centred board;
+     the black bar and band run on into any letterbox above and below. */
+  body {
+    height: 100%; overflow: hidden; font-size: 2.4rem;
+    background:
+      linear-gradient(to bottom, var(--black) calc(50vh - 54rem + 8.8rem), transparent 0, transparent calc(50vh + 54rem - 8rem), var(--black) 0),
+      radial-gradient(42rem 46rem at calc(50vw - 66rem) calc(50vh - 4rem), var(--navy-lit), rgba(29, 47, 110, 0)),
+      radial-gradient(42rem 46rem at calc(50vw + 66rem) calc(50vh - 4rem), var(--oxide-lit), rgba(197, 61, 38, 0)),
+      linear-gradient(to right, var(--navy) 50%, var(--oxide) 50%);
+  }
+
+  .stage {
+    position: absolute; left: 50%; top: 50%; width: 192rem; height: 108rem; max-width: none;
+    margin: -54rem 0 0 -96rem; padding: 0; display: block;
+  }
+
+  /* Bar: black, bone text. */
+  .bar { position: absolute; left: 0; right: 0; top: 0; height: 8.8rem; padding: 0 6.4rem; background: var(--black); display: flex; justify-content: space-between; align-items: center; }
+  /* The bar and the band run on into any letterbox, and cover the ends of the shafts there. */
+  .bar::before { content: ""; position: absolute; z-index: -1; left: -100vw; right: -100vw; bottom: 0; height: 100vh; background: var(--black); }
+  .stage::after { content: ""; position: absolute; z-index: 2; left: -100vw; right: -100vw; top: 100rem; height: 100vh; background: var(--black); pointer-events: none; }
+  .bar-start { flex-direction: row; gap: 2.4rem; }
+  .brandmark { font-size: 4.4rem; }
+  .look-link { font-size: 2rem; }
+  .rail { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); gap: .9rem; overflow: visible; padding: 0; }
+  .rail-label { font-size: 2.4rem; margin-right: 1.4rem; }
+  .rail button { width: 7.2rem; height: 5.6rem; border-radius: .6rem; font-size: 2.8rem; border-width: .2rem; }
+  .bar-actions { gap: 1.2rem; }
+  .pill { height: 5.6rem; padding: 0 2.2rem; border-radius: .6rem; font-size: 2.4rem; gap: 1.1rem; border-width: .2rem; }
+  .pill svg { width: 2.6rem; height: 2.6rem; }
+  .pill kbd { display: inline-block; }
+  .pill-quiet { padding: 0 2.2rem; border-color: var(--line-bone); text-decoration: none; }
+
+  /* Everything is placed on the full board. Only the bar and the big button take clicks. */
+  .intro, .head, .module, .beats, .foot, .tape { pointer-events: none; }
+  .intro { display: block; position: absolute; inset: 0; }
+  .cta-wrap > * { pointer-events: auto; }
+
+  .intro-title { position: absolute; left: 6.4rem; right: 6.4rem; top: 11.6rem; margin: 0; font-size: 16.6rem; font-weight: 850; color: var(--white); white-space: nowrap; }
+  /* Bottom band, opening screen: the line on the left, the key on the right. */
+  .intro-sub {
+    position: absolute; left: 6.4rem; right: 6.4rem; top: 100rem; height: 8rem; margin: 0;
+    display: flex; justify-content: space-between; align-items: center; font-size: 2.6rem;
+  }
+  .intro-line { color: var(--bone); font-weight: 600; }
+  .cta-hint { display: block; font-size: 2.4rem; }
+  .cta-wrap { position: absolute; left: 85rem; top: 42.6rem; width: 22rem; height: 22rem; }
+  .cta { width: 22rem; height: 22rem; border-radius: 50%; background: var(--black); color: var(--bone); font-size: 4.6rem; }
+  .cta:not([disabled]):hover { background: var(--bone); color: var(--black); }
+  .cta:focus-visible { outline-width: .5rem; outline-offset: .8rem; }
+
+  /* The tape down the seam, bar to band. It unrolls from the top as the comparison starts. */
+  .tape {
+    display: block; position: absolute; left: 78rem; width: 36rem; top: 8.8rem; bottom: 8rem; z-index: 2;
+    background:
+      var(--tick) left top / 1.4rem 100% no-repeat, var(--tick) right top / 1.4rem 100% no-repeat,
+      var(--tick-long) left top / 2.6rem 100% no-repeat, var(--tick-long) right top / 2.6rem 100% no-repeat,
+      var(--bone);
+    clip-path: inset(0 0 calc((1 - var(--unroll, 0)) * 100%) 0);
+  }
+
+  .head { position: absolute; left: 78rem; width: 36rem; top: 11.4rem; margin: 0; padding: 0; background: none; display: block; text-align: center; }
+  .head-club { font-size: 7.6rem; }
+  .head-sub { font-size: 2.2rem; margin-top: 1rem; white-space: nowrap; }
+
+  /* Each club's module covers the whole board, so its pieces are placed in board coordinates. */
+  .module { position: absolute; display: block; left: 0; top: 0; width: 192rem; height: 108rem; margin: 0; padding: 0; background: none; }
+  .side-a, .side-b { margin: 0; padding: 0; }
+  .slot { position: absolute; aspect-ratio: auto; margin: 0; }
+  .slot-intro { top: 37rem; width: 60rem; height: 33rem; }
+  .side-a .slot-intro { left: 8rem; }
+  .side-b .slot-intro { left: 124rem; }
+  .slot-compare { top: 19.6rem; width: 38rem; height: 58rem; }
+  .side-a .slot-compare { left: 5.6rem; }
+  .side-b .slot-compare { left: 148.4rem; }
+
+  /* The three values, one column a side, 4rem off the tape. */
+  .tags { display: block; }
+  .tag { position: absolute; width: max-content; }
+  .side-a .tag { right: 118rem; text-align: right; }
+  .side-b .tag { left: 118rem; text-align: left; }
+  .tag-face { top: 23.4rem; }
+  .tag-hosel { top: 46.4rem; }
+  .tag-sole { top: 69.4rem; }
+  .tag-label { font-size: 2.6rem; }
+  .tag-value { font-size: 9.6rem; margin-top: .4rem; }
+
+  /* Names in the bottom outer corners; smaller once the comparison is up (stage.js sets --intro). */
+  .plate { position: absolute; top: auto; bottom: 10.4rem; width: 70rem; margin: 0; transform: scale(calc(.7 + .3 * var(--intro, 1))); }
+  .side-a .plate { left: 6.4rem; text-align: left; transform-origin: 0 100%; }
+  .side-b .plate { right: 6.4rem; text-align: right; transform-origin: 100% 100%; }
+  .plate-brand { font-size: 2.8rem; }
+  .plate-name { font-size: 8.4rem; margin-top: .4rem; }
+  .plate-sub { font-size: 2.6rem; margin-top: .8rem; }
+
+  /* The differences, written on the tape, one row level with each pair of values. */
+  .beats { position: absolute; left: 78rem; width: 36rem; top: 0; height: 0; margin: 0; padding: 0; background: none; display: block; }
+  .beat { position: absolute; left: 0; width: 36rem; display: flex; flex-direction: column; align-items: center; padding: 0; border: 0; text-align: center; }
+  .beat:nth-child(1) { top: 28.4rem; }
+  .beat:nth-child(2) { top: 51.4rem; }
+  .beat:nth-child(3) { top: 74.4rem; }
+  .beat-label, .beat-v { display: none; }
+  .ruler { width: 30rem; height: 5.3rem; margin: 1rem 0 0; }
+  .ruler .end { font-size: 17px; }
+  .beat-delta .amount { font-size: 6.4rem; }
+  .beat-delta .word { font-size: 2.8rem; margin-top: .4rem; }
+
+  /* Bottom band: the closing line, and the notes under it. */
+  .foot { position: absolute; left: 6.4rem; right: 6.4rem; top: 100rem; height: 8rem; margin: 0; display: flex; flex-direction: column; justify-content: center; }
+  .also { gap: 0 6.4rem; font-size: 2.6rem; }
+  .notes { font-size: 1.7rem; margin-top: .6rem; }
+  .status { position: absolute; left: 0; right: 0; top: 50rem; font-size: 3rem; margin: 0; }
+
+  .pin-num { display: none; }
+  .leader { display: block; }
+
+  html.pointer-parked, html.pointer-parked * { cursor: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage.is-entering .intro-title .w, .stage.is-entering .intro-sub,
+  .stage.is-entering .cta-wrap > *, .stage.is-entering .plate { animation: none; }
+  .cta, .pill, .rail button { transition: none; }
+}
+html.reduced .stage.is-entering .intro-title .w, html.reduced .stage.is-entering .intro-sub,
+html.reduced .stage.is-entering .cta-wrap > *, html.reduced .stage.is-entering .plate { animation: none; }

@@ -7,8 +7,8 @@ cd "$(dirname "$0")"
 # Stamp the script and stylesheet links so browsers fetch the new versions
 # straight away instead of using a cached copy for up to ten minutes.
 STAMP=$(date +%Y%m%d%H%M%S)
-sed -i '' "s/?v=[0-9]*/?v=$STAMP/g" site/index.html site/stage.html
-git add site/index.html site/stage.html
+sed -i '' "s/?v=[0-9]*/?v=$STAMP/g" site/index.html site/stage.html site/tape.html
+git add site/index.html site/stage.html site/tape.html
 git commit -q -m "Stamp asset version $STAMP" || true
 
 git push origin main

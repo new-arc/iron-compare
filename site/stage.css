@@ -85,6 +85,9 @@ html.no-gl .flat { display: block; }
 .stage { position: relative; z-index: 3; }
 .brandmark { font-family: var(--serif); font-weight: 500; letter-spacing: .01em; text-decoration: none; white-space: nowrap; }
 .brandmark em { color: var(--gold); font-style: italic; }
+.bar-start { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.look-link { color: var(--muted); font-weight: 500; white-space: nowrap; text-underline-offset: .2em; }
+.look-link:hover { color: var(--ink); }
 
 .rail { display: flex; align-items: center; }
 .rail-label { text-transform: uppercase; letter-spacing: .16em; color: var(--muted); font-weight: 700; }
@@ -179,6 +182,7 @@ html.no-gl .flat { display: block; }
 }
 .bar { grid-area: bar; display: grid; grid-template-columns: 1fr auto; align-items: center; row-gap: 12px; }
 .brandmark { font-size: 2.2rem; }
+.look-link { font-size: 1.3rem; }
 .bar-actions { display: flex; gap: 8px; }
 .pill { height: 40px; padding: 0 14px; border-radius: 20px; font-size: 1.4rem; gap: 7px; }
 .pill svg { width: 16px; height: 16px; }
@@ -253,6 +257,8 @@ html.no-gl .flat { display: block; }
 
   .bar { position: absolute; left: 6.4rem; right: 6.4rem; top: 3.6rem; height: 6.4rem; display: flex; justify-content: space-between; align-items: center; }
   .brandmark { font-size: 4rem; }
+  .bar-start { flex-direction: row; align-items: baseline; gap: 2.4rem; }
+  .look-link { font-size: 2rem; }
   .rail { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); gap: .9rem; overflow: visible; padding: 0; }
   .rail-label { font-size: 2.2rem; margin-right: 1.2rem; }
   .rail button { width: 7.6rem; height: 6rem; border-radius: 1.5rem; font-size: 2.8rem; border-width: .2rem; }

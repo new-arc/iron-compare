@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Iron Compare, stage demo (tape look)</title>
+  <meta name="description" content="Two irons side by side: the stage demo of Iron Compare, in the tale of the tape look.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='16' height='32' fill='%2316255c'/%3E%3Crect x='16' width='16' height='32' fill='%23b8341f'/%3E%3Crect x='12' width='8' height='32' fill='%23f1ead6'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="tape.css?v=20261114124827">
+</head>
+<body>
+  <!-- Leader lines sit under the clubs on this page, so a line that has to pass a club goes behind it. -->
+  <svg id="leaders-under" class="leaders leaders-under" aria-hidden="true"></svg>
+  <!-- One canvas for the whole page. It sits behind the text and is fitted to
+       the layout every frame, so the clubs and the HTML move as one picture. -->
+  <canvas id="gl" class="gl" aria-hidden="true"></canvas>
+  <!-- Plain images that take over if the canvas cannot be used. -->
+  <div id="flat" class="flat" aria-hidden="true"></div>
+  <!-- Callout pins, drawn over the clubs. -->
+  <svg id="leaders" class="leaders" aria-hidden="true"></svg>
+
+  <main id="stage" class="stage" data-phase="loading" data-join=", ">
+    <!-- The measuring tape down the seam. stage.js unrolls it as the comparison starts. -->
+    <div class="tape" id="tape" aria-hidden="true"></div>
+
+    <header class="bar">
+      <div class="bar-start">
+        <a class="brandmark" href="./" id="home">Iron Compare</a>
+        <a class="look-link" href="stage.html">Original look</a>
+      </div>
+      <div class="rail" id="rail" role="group" aria-label="Club to compare">
+        <span class="rail-label">Club</span>
+      </div>
+      <div class="bar-actions">
+        <button type="button" class="pill" id="replay" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Replay</span><kbd>R</kbd>
+        </button>
+        <a class="pill pill-quiet" id="full" href="./">Full comparison</a>
+      </div>
+    </header>
+
+    <section class="intro" id="intro">
+      <h1 class="intro-title" id="intro-title">See exactly how two irons differ.</h1>
+      <p class="intro-sub"><span class="intro-line">Real specs. Real photos. Side by side.</span><span class="cta-hint">or press <kbd>Space</kbd></span></p>
+      <div class="cta-wrap">
+        <button type="button" class="cta" id="start" disabled>
+          <span class="cta-word">Compare</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="head" id="head" aria-live="polite">
+      <p class="head-club" id="head-club"></p>
+      <p class="head-sub" id="head-sub"></p>
+    </section>
+
+    <section class="module side-a" id="mod-a" aria-label="Club A">
+      <div class="slot slot-intro" data-slot="intro"></div>
+      <div class="slot slot-compare" data-slot="compare"></div>
+      <div class="tags" data-tags></div>
+      <div class="plate">
+        <p class="plate-brand"><span data-brand></span></p>
+        <h2 class="plate-name" data-name></h2>
+        <p class="plate-sub" data-sub></p>
+      </div>
+    </section>
+
+    <section class="module side-b" id="mod-b" aria-label="Club B">
+      <div class="slot slot-intro" data-slot="intro"></div>
+      <div class="slot slot-compare" data-slot="compare"></div>
+      <div class="tags" data-tags></div>
+      <div class="plate">
+        <p class="plate-brand"><span data-brand></span></p>
+        <h2 class="plate-name" data-name></h2>
+        <p class="plate-sub" data-sub></p>
+      </div>
+    </section>
+
+    <section class="beats" id="beats" aria-label="How the clubs differ"></section>
+
+    <footer class="foot" id="foot">
+      <ul class="also" id="also"></ul>
+      <p class="notes" id="notes"></p>
+    </footer>
+
+    <p class="status" id="status" role="status">Loading the comparison…</p>
+  </main>
+
+  <noscript><p class="noscript">This page needs JavaScript. The full comparison is at <a href="./">Iron Compare</a>.</p></noscript>
+  <script src="core.js?v=20261114124827" defer></script>
+  <script src="stage.js?v=20261114124827" defer></script>
+</body>
+</html>

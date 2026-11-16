@@ -3,15 +3,16 @@
    checks what ends up on screen against the data file. Run from the
    repository root:
 
-       node checks/check-stage.js
+       node checks/check-stage.js              both looks: stage.html and tape.html
+       node checks/check-stage.js tape.html    one page only
 
    Needs Playwright (https://playwright.dev) with its Chromium:
        npm install --no-save playwright && npx playwright install chromium
 
    It serves site/ itself on a spare port, so nothing else has to be running.
    Four passes: a 1920 by 1080 projector, reduced motion, a browser with WebGL
-   switched off, and a phone. The sequence plays in real time, so the whole
-   thing takes about a minute and a half. */
+   switched off, and a phone, run once for each page named. The sequence
+   plays in real time, so each page takes about a minute and a half. */
 
 'use strict';
 
@@ -67,6 +68,10 @@ function expected(club) {
 const OTHER = SHARED.filter((c) => c !== FEATURED && (C.findClub(A, c).head !== C.findClub(A, FEATURED).head ||
   C.findClub(B, c).head !== C.findClub(B, FEATURED).head))[0] || SHARED.filter((c) => c !== FEATURED)[0];
 const keyFor = (club) => (club === 'PW' ? 'p' : club);
+
+/* The pages to check: the two looks of the stage demo share one script, so every pass runs on each. */
+const PAGES = process.argv.slice(2).length ? process.argv.slice(2) : ['stage.html', 'tape.html'];
+let PAGE = PAGES[0];
 
 /* ---------- a tiny static server for site/ ---------- */
 
@@ -142,7 +147,7 @@ async function projector(browser, base) {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   const log = []; watch(page, log);
   const t0 = Date.now();
-  await page.goto(base + '/stage.html');
+  await page.goto(base + '/' + PAGE);
   await waitPhase(page, 'intro', 20000);
   const ready = Date.now() - t0;
   let s = await state(page);
@@ -243,7 +248,7 @@ async function reducedMotion(browser, base) {
   const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   const log = []; watch(page, log);
-  await page.goto(base + '/stage.html');
+  await page.goto(base + '/' + PAGE);
   await waitPhase(page, 'intro', 20000);
   await page.waitForTimeout(800);
   const moving = await page.evaluate(() => new Promise((resolve) => {
@@ -268,7 +273,7 @@ async function withoutWebGL(base) {
   const browser = await chromium.launch({ args: ['--disable-gpu', '--disable-webgl', '--disable-webgl2', '--disable-3d-apis'] });
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   const log = []; watch(page, log);
-  await page.goto(base + '/stage.html');
+  await page.goto(base + '/' + PAGE);
   await waitPhase(page, 'intro', 20000);
   await page.waitForTimeout(1500);
   const can = await page.evaluate(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); });
@@ -296,7 +301,7 @@ async function phone(browser, base) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   const log = []; watch(page, log);
-  await page.goto(base + '/stage.html');
+  await page.goto(base + '/' + PAGE);
   await waitPhase(page, 'intro', 20000);
   await page.waitForTimeout(2500);
   let s = await state(page);
@@ -319,19 +324,28 @@ async function phone(browser, base) {
   const server = await serve();
   const base = 'http://127.0.0.1:' + server.address().port;
   console.log('Checking the stage demo: ' + A.brand + ' ' + A.name + ' vs ' + B.brand + ' ' + B.name + ', featured club ' + FEATURED + ', switching to ' + OTHER + '.');
+  const counts = [];
   // The software renderer lets a machine without a graphics card still exercise the WebGL path.
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-  try {
-    await projector(browser, base);
-    await reducedMotion(browser, base);
-    await withoutWebGL(base);
-    await phone(browser, base);
-  } catch (err) {
-    failed++;
-    console.log('  FAIL  the check itself stopped: ' + (err && err.message ? err.message.split('\n')[0] : err));
+  for (const p of PAGES) {
+    PAGE = p;
+    const before = { passed: passed, failed: failed };
+    console.log('\n=== ' + PAGE + ' ===');
+    try {
+      await projector(browser, base);
+      await reducedMotion(browser, base);
+      await withoutWebGL(base);
+      await phone(browser, base);
+    } catch (err) {
+      failed++;
+      console.log('  FAIL  the check itself stopped: ' + (err && err.message ? err.message.split('\n')[0] : err));
+    }
+    counts.push(PAGE + ': ' + (passed - before.passed) + ' passed, ' + (failed - before.failed) + ' failed');
   }
   await browser.close();
   server.close();
+  console.log('');
+  counts.forEach((line) => console.log(line));
   console.log('\n' + passed + ' passed, ' + failed + ' failed.');
   process.exit(failed ? 1 : 0);
 })();

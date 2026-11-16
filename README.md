@@ -21,8 +21,9 @@ laptop widths.
 | `site/photos/` | Web-sized manufacturer photos used by the site |
 | `site/stage.html` | The stage demo: one club from each set, side by side, for a projector. See "Stage demo" below |
 | `site/stage.js`, `site/stage-gl.js`, `site/stage.css` | The stage demo's script, its WebGL layer and its styles |
+| `site/tape.html`, `site/tape.css` | The same stage demo in a second look, "tale of the tape". Same script, same data |
 | `site/core.js` | Value formatting and difference wording, shared by the comparison page and the stage demo |
-| `site/vendor/`, `site/fonts/` | Three.js and two fonts, stored with the site so the stage demo needs no internet |
+| `site/vendor/`, `site/fonts/` | Three.js and three fonts (Inter, Source Serif 4, Archivo), stored with the site so the stage demo needs no internet |
 | `checks/` | Two checks to run before a demo or after a data change. See "Checks" below |
 | `source-photos/` | The untouched original photo downloads (this computer only) |
 | `deploy.sh` | Publishes `site/` to the live URL |
@@ -100,6 +101,28 @@ How it adapts:
 To change what it opens on, or which specs it walks through, edit the
 `stage` block at the top of `site/data/iron-sets.json`.
 
+### Tape look
+
+http://localhost:4173/tape.html is the same demo in a second look, borrowed
+from a boxing "tale of the tape": the Ping owns the left half of the screen
+in navy, the Wilson the right half in oxide red, and a bone measuring tape
+unrolls down the middle carrying the differences. The type is Archivo
+(stored in `site/fonts/`). Each page links to the other from its top bar.
+
+It is the same page underneath: `stage.js` drives both, so the controls,
+the 12.2 second timing, the data, reduced motion and the no-WebGL fallback
+are identical. Only `tape.html` and `tape.css` differ. What the stylesheet
+and page can change, without touching the script:
+
+- `--stage-dust` and `--stage-pool` in the CSS (0 to 1) dim the floating
+  specks and the pool of light behind each club. The tape look turns both off.
+- An element with `id="tape"` gets `--unroll` (0 to 1) from the clock, so it
+  can unroll as Compare starts and roll back up on Escape.
+- An `<svg id="leaders-under">` puts the leader lines under the clubs, so a
+  line that has to pass a club goes behind it.
+- `data-join` on `#stage` sets what joins the club to the set name under each
+  plate (", " here instead of " · ").
+
 ## Checks
 
 Run both from the repository root before a demo, and after changing the data
@@ -121,7 +144,8 @@ Needs Playwright (`npm install --no-save playwright && npx playwright install ch
 Opens the stage demo in a real browser four ways (1920 by 1080, reduced
 motion, WebGL switched off, a phone), presses the same keys a presenter
 would, and compares every value and difference on screen with the data file.
-Takes about a minute and a half.
+It does this for both looks, `stage.html` and `tape.html`, and takes about
+three minutes. To check one look only: `node checks/check-stage.js tape.html`.
 
 ## Hosting
 
