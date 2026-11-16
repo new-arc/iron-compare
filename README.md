@@ -118,8 +118,8 @@ and page can change, without touching the script:
   specks and the pool of light behind each club. The tape look turns both off.
 - An element with `id="tape"` gets `--unroll` (0 to 1) from the clock, so it
   can unroll as Compare starts and roll back up on Escape.
-- An `<svg id="leaders-under">` puts the leader lines under the clubs, so a
-  line that has to pass a club goes behind it.
+- `data-casing` on `#leaders` draws a black casing under each leader line,
+  so it stays legible where it crosses a club.
 - `data-join` on `#stage` sets what joins the club to the set name under each
   plate (", " here instead of " · ").
 

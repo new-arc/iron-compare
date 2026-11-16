@@ -30,9 +30,9 @@
 
   const stage = $('stage'), canvas = $('gl'), flatLayer = $('flat'), leaderLayer = $('leaders');
   // Optional pieces a page can add to restyle the stage without its own script (tape.html uses them):
-  // a layer under the clubs for the leader lines, so a line that has to pass a club goes behind it,
-  // and a strip that unrolls as the comparison starts.
-  const lineLayer = $('leaders-under') || leaderLayer, tapeEl = $('tape');
+  // a strip that unrolls as the comparison starts, and data-casing on #leaders, which draws a dark
+  // casing under each leader line so it stays legible where it crosses a club.
+  const tapeEl = $('tape'), casing = leaderLayer.hasAttribute('data-casing');
   // Joins the club to the set name under each plate. A page can set data-join on #stage.
   const JOIN = stage.getAttribute('data-join') || ' · ';
   const mods = {};
@@ -245,8 +245,8 @@
           num: svg('text', { class: 'pin-num' })
         };
         L.num.textContent = String(i + 1);
-        [L.pulse, L.ring, L.core, L.num].forEach((n) => g.appendChild(n));
-        if (lineLayer === leaderLayer) g.insertBefore(L.line, L.pulse); else lineLayer.appendChild(L.line);
+        if (casing) L.casing = svg('path', { class: 'leader-casing', pathLength: '1', 'stroke-dasharray': '1' });
+        [L.casing, L.line, L.pulse, L.ring, L.core, L.num].forEach((n) => { if (n) g.appendChild(n); });
         leaderLayer.appendChild(g);
         beat.leader[side] = L;
       });
@@ -645,8 +645,8 @@
         const photo = S.model[side].photo;
         const uv = photo && photo.toe.anchors[beat.anchor];
         const at = uv && ringO > 0 ? S.renderer.anchor(side, uv) : null;
-        if (!at) { put(L.g, 'display', 'none'); put(L.line, 'display', 'none'); return; }
-        put(L.g, 'display', ''); put(L.line, 'display', '');
+        if (!at) { put(L.g, 'display', 'none'); return; }
+        put(L.g, 'display', '');
         const cx = at.x.toFixed(1), cy = at.y.toFixed(1);
         [L.ring, L.core, L.pulse].forEach((n) => { attr(n, 'cx', cx); attr(n, 'cy', cy); });
         attr(L.ring, 'r', r.toFixed(1)); attr(L.core, 'r', (flow ? 0 : r * 0.36).toFixed(1));
@@ -666,9 +666,13 @@
         else { sx = box.right + 1.2 * S.rem; sy = box.top + box.height * 0.64; }
         const dx = at.x - sx, dy = at.y - sy, len = Math.hypot(dx, dy) || 1;
         const ex = at.x - dx / len * (r + 2), ey = at.y - dy / len * (r + 2);
-        attr(L.line, 'd', 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + 'L' + ex.toFixed(1) + ' ' + ey.toFixed(1));
-        attr(L.line, 'stroke-dashoffset', (-(1 - draw)).toFixed(3));   // grows from the label towards the club
-        put(L.line, 'opacity', draw > 0 ? '1' : '0');
+        const d = 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + 'L' + ex.toFixed(1) + ' ' + ey.toFixed(1);
+        [L.casing, L.line].forEach((n) => {
+          if (!n) return;
+          attr(n, 'd', d);
+          attr(n, 'stroke-dashoffset', (-(1 - draw)).toFixed(3));   // grows from the label towards the club
+          put(n, 'opacity', draw > 0 ? '1' : '0');
+        });
       });
     });
   }
@@ -764,7 +768,6 @@
   function measure() {
     S.rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 10;
     leaderLayer.style.setProperty('--sw', (0.26 * S.rem).toFixed(2) + 'px');
-    if (lineLayer !== leaderLayer) lineLayer.style.setProperty('--sw', (0.26 * S.rem).toFixed(2) + 'px');
     const css = getComputedStyle(document.documentElement);
     ['dust', 'pool'].forEach((k) => {
       const v = parseFloat(css.getPropertyValue('--stage-' + k));

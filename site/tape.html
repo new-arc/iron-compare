@@ -12,29 +12,25 @@
   <link rel="stylesheet" href="tape.css?v=20261114124827">
 </head>
 <body>
-  <!-- Leader lines sit under the clubs on this page, so a line that has to pass a club goes behind it. -->
-  <svg id="leaders-under" class="leaders leaders-under" aria-hidden="true"></svg>
   <!-- One canvas for the whole page. It sits behind the text and is fitted to
        the layout every frame, so the clubs and the HTML move as one picture. -->
   <canvas id="gl" class="gl" aria-hidden="true"></canvas>
   <!-- Plain images that take over if the canvas cannot be used. -->
   <div id="flat" class="flat" aria-hidden="true"></div>
-  <!-- Callout pins, drawn over the clubs. -->
-  <svg id="leaders" class="leaders" aria-hidden="true"></svg>
+  <!-- Callout pins and leader lines, drawn over the clubs. Each line has a black casing under it. -->
+  <svg id="leaders" class="leaders" data-casing aria-hidden="true"></svg>
 
   <main id="stage" class="stage" data-phase="loading" data-join=", ">
     <!-- The measuring tape down the seam. stage.js unrolls it as the comparison starts. -->
     <div class="tape" id="tape" aria-hidden="true"></div>
 
     <header class="bar">
-      <div class="bar-start">
-        <a class="brandmark" href="./" id="home">Iron Compare</a>
-        <a class="look-link" href="stage.html">Original look</a>
-      </div>
+      <a class="brandmark" href="./" id="home">Iron Compare</a>
       <div class="rail" id="rail" role="group" aria-label="Club to compare">
         <span class="rail-label">Club</span>
       </div>
       <div class="bar-actions">
+        <a class="look-link" href="stage.html">Original look</a>
         <button type="button" class="pill" id="replay" disabled>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>Replay</span><kbd>R</kbd>

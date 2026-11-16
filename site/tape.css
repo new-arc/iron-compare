@@ -12,8 +12,8 @@
 
    Knobs stage.js reads from here: --stage-dust and --stage-pool (0 turns off
    the canvas's floating specks and the pool of light behind each club), the
-   #tape element (unrolled through --unroll), #leaders-under (leader lines go
-   under the clubs) and data-join on #stage (what joins the club to the set
+   #tape element (unrolled through --unroll), data-casing on #leaders (a
+   black casing under each leader line) and data-join on #stage (what joins the club to the set
    name under each plate). */
 
 @font-face {
@@ -69,7 +69,6 @@ kbd {
 .gl { z-index: 1; display: block; }
 .flat { z-index: 1; overflow: hidden; display: none; }
 .leaders { z-index: 2; overflow: visible; }
-.leaders.leaders-under { z-index: 1; }      /* first in the page, so the clubs draw over it */
 html.no-gl .gl { display: none; }
 html.no-gl .flat { display: block; }
 
@@ -77,6 +76,7 @@ html.no-gl .flat { display: block; }
 .flat-club img { position: absolute; left: 0; top: 0; width: 1000px; height: 1000px; max-width: none; transform-origin: 0 0; will-change: transform, opacity; }
 
 /* --sw is set by stage.js so line weights scale with the board (about 2.6px at 1080p). */
+.leader-casing { fill: none; stroke: var(--black); stroke-width: calc(var(--sw, 2.6px) * 1.8); stroke-linecap: round; }
 .leader { fill: none; stroke: var(--bone); stroke-width: var(--sw, 2.6px); stroke-linecap: round; }
 .ring { fill: var(--black); stroke: var(--bone); stroke-width: calc(var(--sw, 2.6px) * 1.4); }
 .ring-core { fill: var(--black); }
@@ -97,9 +97,8 @@ html.no-gl .flat { display: block; }
 .bar, .intro-title, .intro-sub, .cta-wrap, .head, .tag, .plate, .beats, .foot, .status { position: relative; z-index: 3; }
 
 .bar { color: var(--bone); }
-.bar-start { display: flex; align-items: baseline; min-width: 0; }
 .brandmark { text-decoration: none; white-space: nowrap; color: var(--bone); }
-.look-link { color: var(--muted-bone); font-weight: 500; white-space: nowrap; text-underline-offset: .2em; }
+.look-link { color: var(--muted-bone); font-weight: 500; font-stretch: 100%; white-space: nowrap; text-decoration: underline; text-underline-offset: .2em; }
 .look-link:hover { color: var(--bone); }
 
 .rail { display: flex; align-items: center; }
@@ -199,10 +198,9 @@ html.no-gl .flat { display: block; }
 }
 .tape { display: none; }
 .bar { grid-area: bar; display: grid; grid-template-columns: 1fr auto; align-items: center; row-gap: 12px; padding-top: 14px; }
-.bar-start { flex-direction: column; align-items: flex-start; gap: 2px; }
 .brandmark { font-size: 2.6rem; }
-.look-link { font-size: 1.3rem; }
-.bar-actions { display: flex; gap: 8px; }
+.look-link { font-size: 1.4rem; margin-right: 6px; }
+.bar-actions { display: flex; align-items: center; gap: 8px; }
 .pill { height: 40px; padding: 0 14px; border-radius: 6px; font-size: 1.4rem; gap: 7px; }
 .pill svg { width: 16px; height: 16px; }
 .pill kbd, .cta-hint { display: none; }
@@ -271,7 +269,7 @@ html.no-gl .flat { display: block; }
 .status { grid-area: status; margin-top: 30px; }
 
 .pin-num { display: block; }
-.leader { display: none; }
+.leader, .leader-casing { display: none; }
 
 /* ---------- artboard layout: laptops and projectors ---------- */
 
@@ -298,10 +296,10 @@ html.no-gl .flat { display: block; }
   /* The bar and the band run on into any letterbox, and cover the ends of the shafts there. */
   .bar::before { content: ""; position: absolute; z-index: -1; left: -100vw; right: -100vw; bottom: 0; height: 100vh; background: var(--black); }
   .stage::after { content: ""; position: absolute; z-index: 2; left: -100vw; right: -100vw; top: 100rem; height: 100vh; background: var(--black); pointer-events: none; }
-  .bar-start { flex-direction: row; gap: 2.4rem; }
   .brandmark { font-size: 4.4rem; }
-  .look-link { font-size: 2rem; }
-  .rail { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); gap: .9rem; overflow: visible; padding: 0; }
+  .look-link { font-size: 2.2rem; margin-right: 1.6rem; }
+  /* A little left of centre, to leave the right-hand group room for the link to the other look. */
+  .rail { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(calc(-50% - 5rem)); gap: .9rem; overflow: visible; padding: 0; }
   .rail-label { font-size: 2.4rem; margin-right: 1.4rem; }
   .rail button { width: 7.2rem; height: 5.6rem; border-radius: .6rem; font-size: 2.8rem; border-width: .2rem; }
   .bar-actions { gap: 1.2rem; }
@@ -391,7 +389,7 @@ html.no-gl .flat { display: block; }
   .status { position: absolute; left: 0; right: 0; top: 50rem; font-size: 3rem; margin: 0; }
 
   .pin-num { display: none; }
-  .leader { display: block; }
+  .leader, .leader-casing { display: block; }
 
   html.pointer-parked, html.pointer-parked * { cursor: none !important; }
 }
